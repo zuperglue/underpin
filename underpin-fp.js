@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2021 Sony Network Communications Europe B.V.
- */
 "use strict";
 const _ = require ('./underpin')
 const api = { VERSION : _.VERSION }

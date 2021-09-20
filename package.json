@@ -1,0 +1,22 @@
+{
+  "name": "underpin",
+  "version": "0.0.1",
+  "description": "Lodash subset and additions for node.js",
+  "main": "underpin.js",
+  "files": ["underpin-fp.js"],
+  "scripts": {
+    "test": "mocha ./test/* --slow 20"
+  },
+  "author": "zuperglue",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zuperglue/underpin"
+  },
+  "devDependencies": {
+    "chai": "",
+    "chai-as-promised": "",
+    "mocha": "",
+    "lodash": ""
+  }
+}

@@ -325,10 +325,9 @@ api.trimEnd = (s, e) => {
   if (!e) return api.toString(s).trimEnd(e)
   const exclude = api.toArray(e)
   const str = api.toString(s)
-  let i =0
-  const n = str.length
-  while ((i < n) && exclude.includes(str[n - i - 1])) i++
-  return str.slice(0, -1*i)
+  let i = str.length
+  while ((i > 0) && exclude.includes(str[i-1])) i--
+  return str.slice(0, i)
 }
 api.trimStart = (s, e) => {
   if (!e) return api.toString(s).trimStart(e)
@@ -474,6 +473,7 @@ api.toJSON = (j,intend = 0) => JSON.stringify(j, null,intend )
 api.resolve = (v) => Promise.resolve(v)
 //const reject = (e) => Promise.reject(e)
 api.rejectIfNil = (v,msg) => api.isNil(v) ? Promise.reject(msg) : v
+api.argsCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v),'"'),'')
 
 //* Internals **************************************/
 

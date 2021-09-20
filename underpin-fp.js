@@ -228,5 +228,6 @@ api.minute = _.minute
 api.resolve = _.resolve
 api.rejectIfNil = curryRight(_.rejectIfNil,2)
 api.isPromise =  _.isPromise
+api.argsCacheKey =  _.argsCacheKey
 
 module.exports = api

@@ -1,6 +1,6 @@
 {
   "name": "underpin",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Lodash subset and additions for node.js",
   "main": "underpin.js",
   "files": ["underpin-fp.js"],

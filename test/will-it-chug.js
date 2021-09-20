@@ -1498,6 +1498,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     });
     it("trim",  function () {
       expect( _.trim(' a b c ', undefined) ).to.be.an('string').eql('a b c')
+      expect( _.trim('{"b":123}','"') ).to.be.an('string').eql('{"b":123}')
+      expect( _.trim('"{"b":123}"','"') ).to.be.an('string').eql('{"b":123}')
+      expect( _.trim('" " x " "','" ') ).to.be.an('string').eql('x')
       expect( _.trim('\nabc\t' , undefined) ).to.be.an('string').eql('abc')
       expect( _.trim('_.abc._','_.') ).to.be.an('string').eql('abc')
       expect( _.trim(null, undefined) ).to.be.an('string').eql('')
@@ -1505,6 +1508,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     });
     it("trimEnd",  function () {
       expect( _.trimEnd(' a b c ', undefined) ).to.be.an('string').eql(' a b c')
+      expect( _.trimEnd('{"b":123}','"') ).to.be.an('string').eql('{"b":123}')
+      expect( _.trimEnd('{"b":123}"','"') ).to.be.an('string').eql('{"b":123}')
+      expect( _.trimEnd(' x" " "','" ') ).to.be.an('string').eql(' x')
       expect( _.trimEnd(' abc\n', undefined) ).to.be.an('string').eql(' abc')
       expect( _.trimEnd(' abc\t', undefined) ).to.be.an('string').eql(' abc')
       expect( _.trimEnd(' abc_.', '_.') ).to.be.an('string').eql(' abc')
@@ -1513,6 +1519,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     });
     it("trimStart",  function () {
       expect( _.trimStart(' a b c ', undefined) ).to.be.an('string').eql('a b c ')
+      expect( _.trimStart('{"b":123}','"') ).to.be.an('string').eql('{"b":123}')
+      expect( _.trimStart('"{"b":123}','"') ).to.be.an('string').eql('{"b":123}')
+      expect( _.trimStart('" " "x ','" ') ).to.be.an('string').eql('x ')
       expect( _.trimStart('\nabc ', undefined) ).to.be.an('string').eql('abc ')
       expect( _.trimStart('\tabc ', undefined) ).to.be.an('string').eql('abc ')
       expect( _.trimStart('_.abc ','_.') ).to.be.an('string').eql('abc ')

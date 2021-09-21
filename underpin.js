@@ -136,7 +136,7 @@ api.map = (a, f) => {
 }
 api.orderBy = (a, ...args) => api.sortBy(a, ...args )
 api.reduce = (a, f, init) => {
-  if (api.isArray(a)) return a.reduce(api.iteratee(f), init)
+  if (api.isArray(a) || api.isSet(a)) return api.toArray(a).reduce(api.iteratee(f), init)
   if (api.isString(a)) return api.toArray(a).reduce((acc,char,i)=> api.iteratee(f)(acc,char,i,a), init)
   if (api.isObject(a)) return api.keys(a).reduce((acc,key)=> api.iteratee(f)(acc,a[key],key,a), init)
   return init
@@ -157,21 +157,20 @@ api.minute = () => {const d = new Date(); d.setHours(d.getHours(),d.getMinutes()
 api.now = () => Date.now()
 api.toDate = (...args) => {
   const d = args[0]
-  if (api.toLower(d) == 'today') return new Date(today())
-  if (api.toLower(d) == 'now') return new Date(now())
-  if (api.toLower(d) == 'tomrorrow') return new Date(tomrorrow())
+  if (api.toLower(d) == 'today') return new Date(api.today())
+  if (api.toLower(d) == 'now') return new Date(api.now())  // dangerous tets, clock may have had tome to tick
+  if (api.toLower(d) == 'tomorrow') return new Date(api.tomorrow())
   if (api.isDate(d)) return d;
   const date = (args.length === 0) ? new Date() : new Date(...args)
   return (api.isNaN(date.valueOf())) ? new InvalidDate(date) : date
 }
-api.toEpoch = (d) => Number(toDate(d))
+api.toEpoch = (d) => Number(api.toDate(d))
 api.today = () => new Date().setHours(0,0,0,0)  //TODO: setHours vs setUTCHours must be defined
 api.toISOString = (d) => api.toDate(d).toISOString()
 api.tomorrow = () => api.today() + 24 * 3600 * 1000
 
 /* Function **********************************/
-api.negate = (predicate) => (...args) => !( (predicate) ? predicate(...args): api.identity(...args) )
-api.wrap = (v, f) => (...args) => f.apply(undefined, [v, ...args])
+api.negate = (predicate) => (...args) => !( api.isFunction(predicate) ? predicate(...args): api.identity(...args) )
 api.memoize = (f, resolver, maxCacheSize = Math.pow(2, 24)) => {
   const cache = new Map()
   const cacheKey = api.isFunction(resolver) ? resolver : api.identity
@@ -230,8 +229,6 @@ api.inRange = (number, start, end) => {
 
 /* Object ************************************/
 api.assign = (o, ...objects) => Object.assign((o || {}),...objects)
-api.functions = (o) => api.keys(o || {} ).filter((n)=> api.isFunction(o[n]))
-api.functionsIn = (o) => keysIn(o || {} ).filter((n)=> api.isFunction(o[n]))
 api.get = (o, p) => {
   if (api.isNil(p) || api.isNil(o)) return undefined
   return hasDotOrArrayStartOrEnd(p) ? api.toPath(p).reduce((a, v) => a ? a[v] : a , o ) : o[p]
@@ -436,7 +433,7 @@ api.by = (arg, ...args) => {
       api.isString(source) ? compareProperty(v1, v2, source) :
       api.isArray(source) ? compareProperty(v1, v2, propertyWhereValueNotEq(source, v1,v2) ) :
       api.isFunction(source) ? compareUsingGetter(v1, v2, source) :
-      api.isObject(source) ? comapreWithSource(v1,v2, source) :
+      api.isObject(source) ? compareWithSource(v1,v2, source) :
       0;
   }
 }
@@ -468,9 +465,8 @@ api.curate = (o, p, ...funcs) => api.flow(...funcs)(api.get(o,p))
 api.falsyTo = (v,to)  => (!v) ? to : v
 api.undefinedTo = (v,to)  => api.isUndefined(v) ? to : v
 api.nilTo = (v,to)  => api.isNil(v) ? to : v
-api.numberOverZero = (v) => !api.toNumber(v) || api.inRange(v ,-Number.MAX_SAFE_INTEGER, 1) ? undefined : api.toNumber(v)
 api.toJSON = (j,intend = 0) => JSON.stringify(j, null,intend )
-api.resolve = (v) => Promise.resolve(v)
+//api.resolve = (v) => Promise.resolve(v)
 //const reject = (e) => Promise.reject(e)
 api.rejectIfNil = (v,msg) => api.isNil(v) ? Promise.reject(msg) : v
 api.argsCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v),'"'),'')
@@ -480,9 +476,11 @@ api.argsCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON
 class InvalidDate extends Date {
   toISOString() { return '' }
 }
+/*
 const tryCatch = (f, ...args) => {
   try { return f( ...args) } catch (e) { return undefined}
 }
+ */
 const hasDotOrArrayStartOrEnd = (s) => {
   if (!api.isString(s)) return false;
   for (let i = 0; i < s.length; i++) if (s.charAt(i) === '.' || s.charAt(i) === '[' || s.charAt(i) === ']') return true;
@@ -497,7 +495,7 @@ const toSet = (a) => new Set(api.toArray(a))
 const isNullPrototype = (o) => (o && Object.getPrototypeOf(o) === null)
 const hasProperty = (o, p) => !api.isNil(o) ? o.hasOwnProperty(p) : false
 const isStrings = (s1,s2) => (!(typeof s1 == 'string' && typeof s2 == 'string'))
-const comapreWithSource = (v1, v2, source) => {
+const compareWithSource = (v1, v2, source) => {
   const prop = propertyWhereValueNotEq(api.keys(source), v1,v2) ;
   const order = !!(api.toLower(source[prop]) === 'desc')
   return compareProperty(v1, v2, prop, order)
@@ -513,7 +511,7 @@ const propertyWhereValueNotEq = (propertyNames, obj1, obj2) => {
 }
 const countWhile = (a, p) => {
   if (!api.isArrayLike(a)) return undefined;
-  const predicate = p || noop;
+  const predicate = api.isFunction(p) ? p : noop;
   let i = 0;
   while( (i < a.length) && predicate(a[i],i,a)) i++;
   return i

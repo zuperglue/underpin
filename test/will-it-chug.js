@@ -3,13 +3,13 @@ const expect = chai.expect;
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
-const testPackageName = process.env.USE_PACKAGE || '../underpin.js'
+const testPackageName = process.env.USE_PACKAGE || '../underpin-fp.js'
 const isChugging = (
-  testPackageName === '../underpin' ||
-  testPackageName === '../underpin-fp'
+  testPackageName === '../underpin.js' ||
+  testPackageName === '../underpin-fp.js'
 );
 const FP = (
-  testPackageName === '../underpin-fp'
+  testPackageName === '../underpin-fp.js'
 )
 
 const instrument = () => {
@@ -85,6 +85,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.castArray('abc') ).to.be.eql(['abc']);
       expect( _.castArray(1) ).to.be.eql([1]);
       expect( _.castArray({a:1}) ).to.be.eql([{a:1}]);
+      if (isChugging){
+        expect( _.castArray(new Set([1,2,3])) ).to.be.eql([1,2,3]);
+      }
       f = ()=>1
       expect( _.castArray(f ) ).to.be.eql([ f ]);
       expect( _.castArray(null) ).to.be.eql([null]);
@@ -103,6 +106,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.conformsTo({a:1,b:2},{}) ).to.be.eql(true);
       expect( _.conformsTo([1,2,3],[]) ).to.be.eql(true);
       expect ( arrIntLarge.forEach( v => _.conformsTo({aa:1,bb:2}, {a:1,b:2}))).to.be.an('undefined');
+      if (FP) {
+        expect( _.conformsTo({a:_.isNumber})({a:1,b:2}) ).to.be.eql(true);
+      }
     });
     it("isArray", function () {
       expect( _.isArray(arrInt) ).to.be.an('boolean').eq(true);
@@ -227,6 +233,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.isEqual(f, f) ).to.be.an('boolean').eq(true)
       expect( _.isEqual(f, ()=>1) ).to.be.an('boolean').eq(false)
       expect ( arrIntLarge.forEach( v => _.isEqual(v, {a:1}))).to.be.an('undefined');
+      if (FP) {
+        expect( _.isEqual({a:1})({a:1}) ).to.be.eql(true);
+      }
     });
     it("isFunction", function () {
       expect( _.isFunction(func) ).to.be.an('boolean').eq(true);
@@ -259,6 +268,14 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.isInteger(undefined) ).to.be.an('boolean').eq(false);
       expect ( arrIntLarge.forEach( v => _.isInteger(v))).to.be.an('undefined');
     });
+    if (isChugging) {
+      it("isIterable", function () {
+        expect( _.isIterable([1,2]) ).to.be.an('boolean').eq(true);
+        expect( _.isIterable(new Set()) ).to.be.an('boolean').eq(true);
+        expect( _.isIterable(null) ).to.be.an('boolean').eq(false);
+        expect( _.isIterable(undefined) ).to.be.an('boolean').eq(false);
+      });
+    }
     it("isPlainObject", function () {
       class Foo {}
       expect( _.isPlainObject({a:1}) ).to.be.an('boolean').eq(true);
@@ -306,6 +323,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.isMatch([1,2,3],[1,2,4]) ).to.be.eql(false);
       expect( _.isMatch([1,2,3],[2,3]) ).to.be.eql(false);
       expect ( arrIntLarge.forEach( v => _.isMatch({aa:1,bb:2}, {a:1,b:2}))).to.be.an('undefined');
+      if (FP) {
+        expect( _.isMatch({a:1})({a:1,b:2}) ).to.be.eql(true);
+      }
     });
     it("isNaN", function () {
       expect( _.isNaN(NaN) ).to.be.an('boolean').eq(true);
@@ -499,7 +519,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.toInteger(undefined) ).to.be.an('number').eql(0);
       expect( _.toInteger(NaN) ).to.be.an('number').eql(0);
       expect( _.toInteger(Infinity) ).to.be.an('number').eql(Number.MAX_VALUE); // Should be Number.MAX_SAFE_INTEGER
-      //expect( _.toInteger(-Infinity) ).to.be.an('number').eql(Number.MIN_SAFE_INTEGER); // Should be Number.MIN_SAFE_INTEGER
+      if (isChugging) {
+        expect( _.toInteger(-Infinity) ).to.be.an('number').eql(Number.MIN_SAFE_INTEGER); // Should be Number.MIN_SAFE_INTEGER
+      }
       expect ( arrIntLarge.forEach( v => _.toInteger(v))).to.be.an('undefined');
 
     });
@@ -535,6 +557,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.eq('1',1) ).to.be.an('boolean').eq(false);
       expect( _.eq(1,'1') ).to.be.an('boolean').eq(false);
       expect ( arrIntLarge.forEach( v => _.eq(v,1))).to.be.an('undefined');
+      if (FP) {
+        expect( _.eq(1)(1) ).to.be.eql(true);
+      }
     });
     it("gt", function () {
       expect( _.gt(2,1) ).to.be.an('boolean').eq(true);
@@ -551,6 +576,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.gt(arrStr,['a','b','c']) ).to.be.an('boolean').eq(false);
       expect( _.gt(undefined,null) ).to.be.an('boolean').eq(false);
       expect ( arrIntLarge.forEach( v => _.gt(v,1))).to.be.an('undefined');
+      if (FP) {
+        expect( _.gt(1)(2) ).to.be.eql(true);
+      }
     });
     it("gte", function () {
       expect( _.gte(2,1) ).to.be.an('boolean').eq(true);
@@ -571,6 +599,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.gte(arrStr,['a','b','c']) ).to.be.an('boolean').eq(false);
       expect( _.gte(undefined,null) ).to.be.an('boolean').eq(false);
       expect ( arrIntLarge.forEach( v => _.gte(v,1))).to.be.an('undefined');
+      if (FP) {
+        expect( _.gte(1)(2) ).to.be.eql(true);
+      }
     });
     it("lt", function () {
       expect( _.lt(1,2) ).to.be.an('boolean').eq(true);
@@ -587,6 +618,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.lt(arrStr,['a','b','c']) ).to.be.an('boolean').eq(false);
       expect( _.lt(undefined,null) ).to.be.an('boolean').eq(false);
       expect ( arrIntLarge.forEach( v => _.lt(v,1))).to.be.an('undefined');
+      if (FP) {
+        expect( _.lt(2)(1) ).to.be.eql(true);
+      }
     });
     it("lte", function () {
       expect( _.lte(1,2) ).to.be.an('boolean').eq(true);
@@ -607,6 +641,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.lte(arrStr,['a','b','c']) ).to.be.an('boolean').eq(false);
       expect( _.lte(undefined,null) ).to.be.an('boolean').eq(false);
       expect ( arrIntLarge.forEach( v => _.lte(v,1))).to.be.an('undefined');
+      if (FP) {
+        expect( _.lte(2)(1) ).to.be.eql(true);
+      }
     });
   })
 
@@ -619,6 +656,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.chunk(undefined,2) ).to.be.an('array').eql([]);
       //expect( _.chunk(func,2) ).to.be.an('array').eql([]);
       expect( _.chunk(arrIntLarge,2) ).to.be.an('array')
+      if (FP) {
+        expect( _.chunk(2)([1,2,3]) ).to.be.eql([[1,2],[3]]);
+      }
     });
     it("compact", function () {
       expect( _.compact(arrFalsy) ).to.be.an('array').eql([], 'Falsy values should return []');
@@ -643,6 +683,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.concat(UNDEF_ARR, UNDEF_ARR) ).to.be.eql([] , '5');
       expect( _.concat(arrInt, UNDEF_ARR) ).to.be.eql(arrInt).and.not.eq(arrInt , '6');
       expect( _.concat(arrIntLarge, arrIntLarge, arrIntLarge, arrIntLarge, arrIntLarge, arrIntLarge) ).to.be.an('array')
+      if (FP) {
+        expect( _.concat(4)([1,2,3]) ).to.be.eql([1,2,3,4]);
+      }
     });
     it("difference", function () {
       expect( _.difference([2,1],[2,3]) ).to.be.an('array').eql([1]);
@@ -660,18 +703,27 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.difference(NaN,arrInt) ).to.be.an('array').eql([]);
       expect( _.difference(undefined,arrInt) ).to.be.an('array').eql([]);
       expect( _.difference(arrIntLarge,arrIntLarge) ).to.be.an('array');
+      if (FP) {
+        expect( _.difference([2,3])([2,1]) ).to.be.eql([1]);
+      }
     });
     it("drop", function () {
-      expect( _.drop([1,2,3,4], UNDEF_1) ).to.be.eql([2,3,4]);
-      expect( _.drop([], UNDEF_1) ).to.be.eql([]);
+      expect( _.drop([1,2,3,4], 1) ).to.be.eql([2,3,4]);
+      expect( _.drop([], 1) ).to.be.eql([]);
       expect( _.drop(null,0) ).to.be.eql([], '3');
       expect( _.drop(arrIntLarge,100000) ).to.be.an('array');
+      if (FP) {
+        expect( _.drop(1)([1,2,3,4]) ).to.be.eql([2,3,4]);
+      }
     });
     it("dropWhile", function () {
       expect( _.dropWhile([1,2,3,4], (v)=>v<2) ).to.be.eql([2,3,4]);
       expect( _.dropWhile([1,2,3,4], undefined) ).to.be.eql([]);
       expect( _.dropWhile(undefined, undefined) ).to.be.eql([]);
       expect( _.dropWhile(arrIntLarge, (v)=>v <= largeArrSize) ).to.be.eql([]);
+      if (FP) {
+        expect( _.dropWhile((v)=>v<2)([1,2,3,4]) ).to.be.eql([2,3,4]);
+      }
     });
     it("first", function () {
       expect( _.first([1,2,3]) ).to.be.eql(1);
@@ -705,11 +757,13 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     it("intersection", function () {
       expect( _.intersection([1,2],[2,2,3]) ).to.be.an('array').eql([2]);
       expect( _.intersection([1,2],[3,4,4]) ).to.be.an('array').eql([]);
-      if (!FP) {
-        expect(_.intersection([1, 2])).to.be.an('array').eql([1, 2]);
-      }
       expect( _.intersection(null, null) ).to.be.an('array').eql([]);
       expect( _.intersection(arrIntLarge,arrIntLarge) ).to.be.an('array');
+      if (FP) {
+        expect(_.intersection([2,2,3])([1,2]) ).to.be.an('array').eql([2]);
+      } else {
+        expect(_.intersection([1, 2])).to.be.an('array').eql([1, 2]);
+      }
     });
     it("join", function () {
       const UNDEF_SPLITTER = (FP) ? ',' : undefined
@@ -719,6 +773,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.join('abc', '-') ).to.be.eql('a-b-c');
       expect( _.join(null,UNDEF_SPLITTER) ).to.be.eql('');
       expect( _.join(arrIntLarge,'') ).to.be.an('string');
+      if (FP) {
+        expect( _.join('-')([1,2,3]) ).to.be.eql('1-2-3');
+      }
     });
     it("last", function () {
       expect( _.last([1,2,3]) ).to.be.eql(3);
@@ -728,7 +785,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     });
     it("reverse", function () {
       expect( _.reverse([1,2,3]) ).to.be.eql([3,2,1]);
-      //expect( _.reverse('abc') ).to.be.eql('cba'); // lodash crashes when trying with string
+      if (isChugging) {
+        expect( _.reverse('abc') ).to.be.eql('cba'); // lodash crashes when trying with string
+      }
       expect( _.reverse({a:1}) ).to.be.eql({a:1})
       expect( _.reverse(func) ).to.be.eql(func)
       expect( _.reverse(null) ).to.be.eql(null)
@@ -742,7 +801,12 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.slice([1,2,3,4],-1, UNDEF_HIGH) ).to.be.eql([4]);
       expect( _.slice(null,0, UNDEF_HIGH) ).to.be.eql([]);
       expect( _.slice(arrIntLarge,0, 100000) ).to.be.an('array')
-
+      if (FP) {
+        expect( _.slice() ).to.be.an('function');
+        expect( _.slice(1) ).to.be.an('function');
+        expect( _.slice(1000)(3)([1,2,3,4]) ).to.be.eql([4]);
+        expect( _.slice(3,1000)([1,2,3,4]) ).to.be.eql([4]);
+      }
     });
     it("tail", function () {
       expect( _.tail([1,2,3,4]) ).to.be.eql([2,3,4]);
@@ -757,9 +821,6 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.union(arrInt,func) ).to.be.an('array').eql(arrInt);
       expect( _.union(arrInt,null) ).to.be.an('array').eql(arrInt);
       expect( _.union(arrInt,NaN) ).to.be.an('array').eql(arrInt);
-      if (!FP) {
-        expect(_.union(arrInt)).to.be.an('array').eql(arrInt);
-      }
       expect( _.union(int,arrInt) ).to.be.an('array').eql(arrInt);
       expect( _.union(str,arrStr) ).to.be.an('array').eql(arrStr);
       expect( _.union(func,arrInt) ).to.be.an('array').eql(arrInt);
@@ -767,6 +828,13 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.union(NaN,arrInt) ).to.be.an('array').eql(arrInt);
       expect( _.union(undefined,arrInt) ).to.be.an('array').eql(arrInt);
       expect( _.union(arrIntLarge,arrIntLarge) ).to.be.an('array');
+      if (FP) {
+        expect( _.union() ).to.be.an('function');
+        expect( _.union(1) ).to.be.an('function');
+        expect(_.union([1, 2])([2]) ).to.be.an('array').eql([2, 1]);
+      } else {
+        expect(_.union([1,2,3])).to.be.an('array').eql([1,2,3]);
+      }
     });
     it("uniq", function () {
       expect( _.uniq([2, 1, 2]) ).to.be.an('array').eql([2, 1]);
@@ -781,16 +849,20 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.xor([2, 1], [2, 2, 3]) ).to.be.an('array').eql([1, 3]);
       expect( _.xor([2,2, 1], [3, 2, 2]) ).to.be.an('array').eql([1, 3]);
       expect( _.xor(arrStr,arrStr) ).to.be.an('array').eql([]);
-      // expect( _.xor(arrStr,str) ).to.be.an('array').eql([]); // lodash to not expand str to array
-      // expect( _.xor(str,arrStr) ).to.be.an('array').eql([]);  // lodash to not expand str to array
+      // expect( _.xor(arrStr,str) ).to.be.an('array').eql([]); // lodash do not expand str to array
+      // expect( _.xor(str,arrStr) ).to.be.an('array').eql([]);  // lodash do not expand str to array
       expect( _.xor(arrStr,func) ).to.be.an('array').eql(arrStr);
       expect( _.xor(arrStr,null) ).to.be.an('array').eql(arrStr);
       expect( _.xor(arrStr,undefined) ).to.be.an('array').eql(arrStr);
       expect( _.xor(func, arrStr) ).to.be.an('array').eql(arrStr);
       expect( _.xor(null, arrStr) ).to.be.an('array').eql(arrStr);
       expect( _.xor(undefined, arrStr) ).to.be.an('array').eql(arrStr);
-      expect( _.xor() ).to.be.an('array').eql([]);
       expect( _.xor(arrIntLarge,arrIntLarge) ).to.be.an('array').eql([]);
+      if (FP) {
+        expect( _.xor([2, 3])([2, 1]) ).to.be.an('array').eql([1, 3]);
+      } else {
+        expect( _.xor() ).to.be.an('array').eql([]);
+      }
     });
     it("zipObject", function () {
       expect( _.zipObject(['a','b'], [1, 2]) ).to.be.an('object').eql({a:1,b:2});
@@ -800,7 +872,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.zipObject(['a','b'], '1') ).to.be.an('object').eql({a:"1",b:undefined});
       expect( _.zipObject(undefined, undefined) ).to.be.an('object').eql({});
       expect( _.zipObject(arrIntLarge, arrIntLarge) ).to.be.an('object');
-
+      if (FP) {
+        expect( _.zipObject([1, 2])(['a','b']) ).to.be.an('object').eql({a:1,b:2});
+      }
     });
   })
 
@@ -815,7 +889,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.find(null,  {age:40}) ).to.be.eql(undefined, 'null collection');
       expect( _.find(undefined,  {age:40}) ).to.be.eql(undefined, 'undefined collection');
       expect( _.find(null, null) ).to.be.eql(undefined, 'undefined collection, undefined spec');
-      if (!FP) {
+      if (FP) {
+        expect(_.find({age:40})(people)).to.be.eql(fred);
+      } else {
         expect(_.find()).to.be.eql(undefined);
       }
     });
@@ -830,10 +906,12 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.filter(null,  {age:40}) ).to.be.an('array').eql([]);
       expect( _.filter(undefined,  {age:40}) ).to.be.an('array').eql([]);
       expect( _.filter(null, null) ).to.be.an('array').eql([], 'null function');
-      if (!FP) {
+      expect( _.filter(arrIntLarge,(v)=> v) ).to.be.an('array');
+      if (FP) {
+        expect( _.filter({age:40})(people) ).to.be.an('array').eql([fred]);
+      } else {
         expect(_.filter()).to.be.an('array').eql([], 'undefined , undefined');
       }
-      expect( _.filter(arrIntLarge,(v)=> v) ).to.be.an('array');
     });
     it("forEach", function () {
       _.forEach([1,2,3], (v,i,a) => {
@@ -856,6 +934,11 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect(_.forEach([1,2], 3)).to.be.eql([1,2])
       expect(_.forEach(undefined,undefined)).to.be.eql(undefined)
       expect( _.forEach(arrIntLarge,(v)=> v) ).to.be.an('array');
+      if (FP) {
+        _.forEach((v,i,a) => {
+          expect(v).to.be.an('number').eql(a[i])
+        })([1,2,3])
+      }
     });
     it("groupBy", function () {
       expect( _.groupBy([{a:'alfa'},{a:'beta'}], (o) => o.a) ).to.be.an('object').eql({alfa:[{a:'alfa'}],beta:[{a:'beta'}]})
@@ -865,16 +948,23 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.groupBy(null, (o) => o.a) ).to.be.an('object').eql({})
       expect( _.groupBy([{a:'alfa'}], undefined) ).to.be.an('object').eql({"[object Object]":[{a:'alfa'}]})
       expect( _.groupBy([{a:'alfa'}], {}) ).to.be.an('object').eql({"true":[{a:'alfa'}]})
-
-
+      if (FP) {
+        expect( _.groupBy('a')([{a:'alfa'},{a:'beta'}]) ).to.be.an('object').eql({alfa:[{a:'alfa'}],beta:[{a:'beta'}]})
+      }
     });
     it("includes", function () {
       expect( _.includes([1,2,3], 3) ).to.be.eql(true);
       expect( _.includes('abc', 'c') ).to.be.eql(true);
       expect( _.includes({a:1,b:2},2) ).to.be.eql(true);
+      if (isChugging) {
+        expect( _.includes(new Set([1,2,3]), 3) ).to.be.eql(true);
+      }
       expect( _.includes(null,1) ).to.be.eql(false);
       expect( _.includes(func,1) ).to.be.eql(false);
       expect( _.includes(arrIntLarge,1000) ).to.be.eql(true);
+      if (FP) {
+        expect( _.includes(3)([1,2,3]) ).to.be.eql(true);
+      }
     });
     it("map", function () {
       expect( _.map([1,2,3],(v)=>v*2 ) ).to.be.an('array').eql([2,4,6]);
@@ -886,6 +976,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.map('abc',null ) ).to.be.an('array').eql(['a','b','c']);
       expect( _.map({a:1,b:2},null ) ).to.be.an('array').eql([1,2]);
       expect( _.map(people,'age' ) ).to.be.an('array').eql([ 25, 25, 52, 40, 25, 52 ]);
+      if (FP) {
+        expect( _.map((v)=>v*2 )([1,2,3]) ).to.be.an('array').eql([2,4,6]);
+      }
     });
     it("orderBy", function () {
       expect( _.orderBy([3,2,1] ,undefined) ).to.be.an('array').eql([1,2,3]);
@@ -900,11 +993,14 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       if (isChugging) {
         expect( _.orderBy([johnny, becky,john],{gender:'desc', name:'asc'}) ).to.be.an('array').eql([john,johnny, becky]);
       }
+      if (FP) {
+        expect( _.orderBy({age:'asc'})([becky,john]) ).to.be.an('array').eql([john,becky]);
+      }
     });
     it("reduce", function () {
-      expect( _.reduce(arrInt,(a,v,i,arr)=>a+arr[i]+v,0) ).to.be.an('number').eql(6*2);
-      expect( _.reduce(obj,(a,v,k,o)=>a+o[k]+v,0) ).to.be.an('number').eql(6*2);
-      expect( _.reduce(str,(a,v,i,s)=>a+s[i],'') ).to.be.an('string').eql(str);
+      expect( _.reduce([1,2,3],(a,v,i,arr)=>a+arr[i]+v,0) ).to.be.an('number').eql(6*2);
+      expect( _.reduce({a:1,b:2,c:3},(a,v,k,o)=>a+o[k]+v,0) ).to.be.an('number').eql(6*2);
+      expect( _.reduce('abc',(a,v,i,s)=>a+s[i],'') ).to.be.an('string').eql('abc');
       expect( _.reduce(undefined,null,[]) ).to.be.an('array').eql([]);
       expect( _.reduce(null,null,[]) ).to.be.an('array').eql([]);
       expect( _.reduce(arrInt,null, 0) ).to.be.an('number').eql(0);
@@ -912,12 +1008,21 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.reduce(clazz,(a,v)=>a+v,[]) ).to.be.an('array').eql([]);
       expect( _.reduce(int,(a,v)=>a+v,[]) ).to.be.an('array').eql([]);
       expect( _.reduce(arrIntLarge,(a,v,i,arr)=>arr[i],0 )).to.be.an('number').eql(arrIntLarge[arrIntLarge.length-1]);
-      //expect( _.reduce(set,(a,v)=>a+v,0) ).to.be.an('number').eql(6); // not in lodash, WTF
+      if (isChugging) {
+        expect(_.reduce(new Set([1,2,3]), (a, v) => a + v, 0)).to.be.an('number').eql(6); // not in lodash, WTF
+      }
+      if (FP) {
+        expect( _.reduce((a, v) => a + v, 0)([1,2,3]) ).to.be.an('number').eql(6);
+        expect( _.reduce(0)((a, v) => a + v)([1,2,3]) ).to.be.an('number').eql(6);
+      }
     });
     it("reject", function () {
       expect( _.reject([becky,john],{age:52}) ).to.be.an('array').eql([john]);
-      expect( _.reject([becky,john],'age') ).to.be.an('array').eql([]);
+      expect( _.reject([becky,john],'age') ).to.be.an('array').eql([]); // has age
       expect( _.reject([becky,john],'agex') ).to.be.an('array').eql([becky,john]);
+      if (FP) {
+        expect( _.reject({age:52})([becky,john]) ).to.be.an('array').eql([john]);
+      }
     });
     it("size", function () {
       expect( _.size([3,2,1]) ).to.be.an('number').eql(3);
@@ -931,20 +1036,20 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.size(undefined) ).to.be.an('number').eql(0);
     });
     it("sortBy", function () {
-      if (!FP) {
-        const a0 = [1,2,3];
-        expect(_.sortBy(a0)).to.be.an('array').eql([1, 2, 3]).not.eq(a0); // make sure it's cloned
-      }
       expect( _.sortBy([3,2,1] ,undefined) ).to.be.an('array').eql([1,2,3]);
       expect( _.sortBy(['c','b','a'], undefined ) ).to.be.an('array').eql(['a','b','c']);
       expect( _.sortBy([becky,john],'age') ).to.be.an('array').eql([john,becky]);
       expect( _.sortBy([john,becky],'name') ).to.be.an('array').eql([becky, john]);
       expect( _.sortBy([bill ,becky, john],['age','name']) ).to.be.an('array').eql([john, becky, bill]);
       expect( _.sortBy([bill ,becky, john],'age','name') ).to.be.an('array').eql([john, becky, bill]);
-      if (!FP) {
-        expect(_.sortBy()).to.be.an('array').eql([]);
-      }
       expect( _.sortBy(arrIntLarge, undefined) ).to.be.an('array')
+      if (FP) {
+        expect( _.sortBy('age')([becky,john]) ).to.be.an('array').eql([john,becky]);
+      } else {
+        expect(_.sortBy()).to.be.an('array').eql([]);
+        const a0 = [1,2,3];
+        expect(_.sortBy(a0)).to.be.an('array').eql([1, 2, 3]).not.eq(a0); // make sure it's cloned
+      }
       if (isChugging) {
         expect( _.sortBy([johnny, becky,john],{gender:'desc', name:'asc'}) ).to.be.an('array').eql([john,johnny, becky]);
       }
@@ -1011,8 +1116,12 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     it("negate",  function () {
       expect( _.negate(_.gt)(50,1) ).to.be.eql(_.lt(50,1))
       expect( _.negate(_.gt)(1,50) ).to.be.eql(_.lt(1,50))
-      //expect( _.negate()(true) ).to.be.eql(false) // not suported by lodash
-      //expect( _.negate()(false) ).to.be.eql(true) // not suported by lodash
+      if (isChugging){
+        expect( _.negate()(true) ).to.be.eql(false) // not suported by lodash
+        expect( _.negate()(false) ).to.be.eql(true) // not suported by lodash
+        expect( _.negate(1)(10) ).to.be.eql(false) // not suported by lodash
+      }
+
     });
   })
 
@@ -1484,6 +1593,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     });
     it("toLower",  function () {
       expect( _.toLower('ABC') ).to.be.an('string').eql('abc')
+      expect( _.toLower('ÅÄÖ') ).to.be.an('string').eql('åäö')
       expect( _.toLower(['A','B','C']) ).to.be.an('string').eql('a,b,c')
       expect( _.toLower({a:1}) ).to.be.an('string').eql('[object object]')
       expect( _.toLower(null) ).to.be.an('string').eql('')
@@ -1491,6 +1601,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     });
     it("toUpper",  function () {
       expect( _.toUpper('abc') ).to.be.an('string').eql('ABC')
+      expect( _.toUpper('åäö') ).to.be.an('string').eql('ÅÄÖ')
       expect( _.toUpper(['a','b','c']) ).to.be.an('string').eql('A,B,C')
       expect( _.toUpper({a:1}) ).to.be.an('string').eql('[OBJECT OBJECT]')
       expect( _.toUpper(null) ).to.be.an('string').eql('')
@@ -1726,6 +1837,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         // Only testing that basic function is availible, all details tested by sortBy and orderBy
         expect( [3,2,1].sort(_.by() ) ).to.be.eql([1,2,3]);
         expect( [1,2,3,11].sort(_.by([],['desc']) ) ).to.be.eql([11,3,2,1]);
+        expect( [1,2,3,11].sort(_.by((v)=>v) ) ).to.be.eql([1,2,3,11]);
 
       });
       it("compareValues", function () {
@@ -1812,6 +1924,91 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect(_.push([], undefined)).to.be.an('array').eql([undefined]);
         expect(_.push([], boolFalse)).to.be.an('array').eql([boolFalse]);
       });
+      it("toDate", function () {
+        expect(_.toDate(null)).to.be.an('date').eql(new Date(0));
+        expect(_.isToday(_.toDate('now'))).to.be.eql(true);
+        expect(_.toDate('today')).to.be.an('date').eql(new Date((new Date().setHours(0,0,0,0))));
+        expect(_.toDate('tomorrow')).to.be.an('date').eql(new Date(_.tomorrow()));
+        expect(_.isToday(_.toDate()) ).to.be.eql(true);
+        const date = new Date()
+        expect(_.isToday(_.toDate(date))).to.be.eql(true);
+        const invalidDate =  _.toDate('fail')
+        expect(invalidDate.toISOString()).to.be.eql('');
+
+      });
+      it("toISOString", function () {
+        expect(_.toISOString(0)).to.be.an('string').eql('1970-01-01T00:00:00.000Z');
+      });
+      it("toEpoch", function () {
+        expect(_.toEpoch(0)).to.be.an('number').eql(0);
+      });
+      it("isToday", function () {
+        expect(_.isToday(_.today())).to.be.an('boolean').eql(true);
+        expect(_.isToday(_.tomorrow())).to.be.an('boolean').eql(false);
+        expect(_.isToday(_.toEpoch(_.today()) -1 )).to.be.an('boolean').eql(false);
+      });
+      it("hour", function () {
+        const hour = _.toDate(_.hour())
+        expect( hour.getHours() ).to.be.an('number').eql(_.toDate().getHours());
+      });
+      it("minute", function () {
+        const minute = _.toDate(_.minute())
+        expect( minute.getMinutes() ).to.be.an('number').eql(_.toDate().getMinutes());
+      });
+      it("curate", function () {
+        expect( _.curate({a:1}, 'a', [_.toString]) ).to.be.eql('1');
+        expect( _.curate({a:'a'}, 'a', [_.toUpper, _.toLower]) ).to.be.eql('a');
+      });
+      it("falsyTo", function () {
+        expect( _.falsyTo(null,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo(undefined,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo(0,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo('','falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo(NaN,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo({},'falsy') ).to.be.eql({});
+        expect( _.falsyTo(100,'falsy') ).to.be.eql(100);
+        expect( _.falsyTo('a','falsy') ).to.be.eql('a');
+      });
+      it("nilTo", function () {
+        expect( _.nilTo(null,'falsy') ).to.be.eql('falsy');
+        expect( _.nilTo(undefined,'falsy') ).to.be.eql('falsy');
+        expect( _.nilTo(0,'falsy') ).to.be.eql(0);
+        expect( _.nilTo('','falsy') ).to.be.eql('');
+        expect( _.nilTo(NaN,'falsy') ).to.be.eql(NaN);
+        expect( _.nilTo({},'falsy') ).to.be.eql({});
+        expect( _.nilTo(100,'falsy') ).to.be.eql(100);
+        expect( _.nilTo('a','falsy') ).to.be.eql('a');
+      });
+      it("undefinedTo", function () {
+        expect( _.undefinedTo(undefined,'falsy') ).to.be.eql('falsy');
+        expect( _.undefinedTo(null,'falsy') ).to.be.eql(null);
+        expect( _.undefinedTo(0,'falsy') ).to.be.eql(0);
+        expect( _.undefinedTo('','falsy') ).to.be.eql('');
+        expect( _.undefinedTo(NaN,'falsy') ).to.be.eql(NaN);
+        expect( _.undefinedTo({},'falsy') ).to.be.eql({});
+        expect( _.undefinedTo(100,'falsy') ).to.be.eql(100);
+        expect( _.undefinedTo('a','falsy') ).to.be.eql('a');
+      });
+      it("toJSON", function () {
+        expect( _.toJSON(1) ).to.be.eql('1');
+        expect( _.toJSON('a') ).to.be.eql('"a"');
+        expect( _.toJSON({a:1}) ).to.be.eql('{"a":1}');
+        expect( _.toJSON(null) ).to.be.eql('null');
+        expect( _.toJSON(undefined) ).to.be.eql(undefined);
+        expect( _.toJSON(()=>1) ).to.be.eql(undefined);
+      });
+      it("rejectIfNil", function () {
+        expect( _.rejectIfNil(1, 'Fail') ).to.be.eql(1);
+        expect( _.isPromise(_.rejectIfNil(null,'fail')) ).to.be.eql(true);
+        expect( _.isPromise(_.rejectIfNil(undefined,'fail')) ).to.be.eql(true);
+      });
+      it("argsCacheKey", function () {
+        expect( _.argsCacheKey('a') ).to.be.eql('a');
+        expect( _.argsCacheKey('a', {a:1}) ).to.be.eql('a{"a":1}');
+        expect( _.argsCacheKey('a', {a:1}, [1,2]) ).to.be.eql('a{"a":1}[1,2]');
+
+      });
+
     })
 
     describe('Internals', function () {

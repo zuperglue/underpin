@@ -54,6 +54,8 @@ const curryRight = (f, arity) => {
       return curry3(f)
   }
 }
+let dummy = curryRight(null,0)
+dummy = curryRight(null,1)
 
 /* lodash mapping */
 
@@ -77,8 +79,8 @@ api.slice = curryRight(_.slice,3)
 api.tail = _.tail
 api.union = curryRight(_.union,2)
 api.uniq = _.uniq
-api.xor = _.xor
-api.zipObject = _.zipObject
+api.xor = curryRight(_.xor,2)
+api.zipObject = curryRight(_.zipObject,2)
 
 /* Collection ***************************************/
 api.forEach = curryRight(_.forEach,2)
@@ -99,7 +101,6 @@ api.now = _.now
 /* Function **************************************/
 api.negate = _.negate
 api.memoize = _.memoize
-api.wrap = _.wrap                                     // NOT curried
 
 /* Lang **************************************/
 api.castArray = _.castArray
@@ -113,10 +114,11 @@ api.isBoolean = _.isBoolean
 api.isBuffer = _.isBuffer
 api.isDate = _.isDate
 api.isEmpty = _.isEmpty
-api.isEqual = _.isEqual
+api.isEqual = curryRight(_.isEqual,2)
 api.isError = _.isError
 api.isFunction = _.isFunction
 api.isInteger = _.isInteger
+api.isIterable = _.isIterable
 api.isLength = _.isLength
 api.isMap = _.isMap
 api.isMatch = curryRight(_.isMatch,2)
@@ -154,8 +156,6 @@ api.inRange = curryRight(_.inRange,3)
 
 /* Object **************************************/
 api.assign = curryRight(_.assign,2)               // Partial only support 1 arg
-api.functions = _.functions
-api.functionsIn = _.functionsIn
 api.get = curryRight(_.get,2)                      // No default
 api.has = curryRight(_.has,2)
 api.keys = _.keys
@@ -216,7 +216,6 @@ api.nilTo = curryRight(_.nilTo,2)
 api.undefinedTo = curryRight(_.undefinedTo,2)
 api.curate = curryRight(_.curate,3)
 api.toISOString = _.toISOString
-api.numberOverZero = _.numberOverZero
 api.today = _.today
 api.tomorrow = _.tomorrow
 api.toEpoch = _.toEpoch
@@ -225,7 +224,7 @@ api.toDate = _.toDate
 api.isToday = _.isToday
 api.hour = _.hour
 api.minute = _.minute
-api.resolve = _.resolve
+//api.resolve = _.resolve
 api.rejectIfNil = curryRight(_.rejectIfNil,2)
 api.isPromise =  _.isPromise
 api.argsCacheKey =  _.argsCacheKey

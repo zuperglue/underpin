@@ -1,11 +1,15 @@
 {
   "name": "underpin",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Lodash subset and additions for node.js",
   "main": "underpin.js",
-  "files": ["underpin-fp.js"],
+  "files": [
+    "underpin-fp.js"
+  ],
   "scripts": {
-    "test": "mocha ./test/* --slow 20"
+    "test": "nyc --reporter=text --reporter=html mocha ./test/* --slow 20",
+    "test:underpin": "USE_PACKAGE=../underpin.js nyc --reporter=text mocha ./test/* --slow 20 ",
+    "test:lodash": "USE_PACKAGE=lodash mocha ./test/* --slow 20 "
   },
   "author": "zuperglue",
   "license": "MIT",
@@ -17,6 +21,7 @@
     "chai": "",
     "chai-as-promised": "",
     "mocha": "",
-    "lodash": ""
+    "lodash": "",
+    "nyc": ""
   }
 }

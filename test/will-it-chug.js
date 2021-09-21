@@ -3,13 +3,13 @@ const expect = chai.expect;
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
-const testPackageName = process.env.USE_PACKAGE || '../underpin-fp.js'
+const testPackageName = process.env.USE_PACKAGE || '../fp.js'
 const isChugging = (
   testPackageName === '../underpin.js' ||
-  testPackageName === '../underpin-fp.js'
+  testPackageName === '../fp.js'
 );
 const FP = (
-  testPackageName === '../underpin-fp.js'
+  testPackageName === '../fp.js'
 )
 
 const instrument = () => {

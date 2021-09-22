@@ -10,7 +10,7 @@
 | _.concat(array, [values]) | _.concat(values)(array) <br> _.concat(array, values)  |
 | _.difference(array, [values]) | _.difference(values)(array) <br>  _.difference(array,values) |
 | _.drop(array, [n=1]) | _.drop(n)(array) <br> _.drop(array, n) |
-| _.dropWhile(array, [predicate=_.identity]) | _.dropWhile(predicate)(array) <br> _.dropWhile(array, predicate) |
+| _.dropWhile(array, [predicate= _.identity]) | _.dropWhile(predicate)(array) <br> _.dropWhile(array, predicate) |
 | _.first(array) | _.first(array) |
 | _.flatten(array) | _.flatten(array) |
 | _.fromPairs(pairs) | _.fromPairs(pairs) |

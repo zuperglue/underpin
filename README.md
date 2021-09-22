@@ -89,8 +89,10 @@
 | | [minBy(array, [iteratee=identity])](https://lodash.com/docs/4.17.15#minBy) | minBy(iteratee)(array) <br> minBy(array,iteratee) |
 | | [sum(array)](https://lodash.com/docs/4.17.15#sum) | sum(array) |
 | | [sumBy(array, [iteratee=identity])](https://lodash.com/docs/4.17.15#sumBy) | sumBy(iteratee)(array) <br> sumBy(array,iteratee) |
+|  |
 | <br><br>:black_small_square: | <br><br> **Number** | |
 | | [inRange(number, [start=0], end)](https://lodash.com/docs/4.17.15#inRange) | inRange(end)(start)(number) <br> inRange(start, end)(number) <br> inRange(number,start, end) |
 | <br><br>:black_small_square: | <br><br> **Object** | |
+| | [assign(object, [sources])](https://lodash.com/docs/4.17.15#assign) | assign(source)(object) <br> assign(object, sources) |
 
 

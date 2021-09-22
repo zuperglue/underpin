@@ -59,5 +59,5 @@
 | | isEqual(value, other) | isEqual(other)(value) <br> isEqual(value, other) |
 | | isError(value) | isError(value) |
 | | isFunction(value) | isFunction(value) |
-| | isInteger(value) | isInteger(value) |
+| | [isInteger(value)](https://lodash.com/docs/4.17.15#isInteger) | isInteger(value) |
 

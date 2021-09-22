@@ -26,7 +26,7 @@
 | _.xor([array1],[array2]) | _.xor(array2)(array1) <br> _.xor(array1, array2)|
 | _.zipObject([props=[]], [values=[]]) | _.zipObject(values)(props) <br> _.zipObject(props, values)|
 |  |
-| <br><br> <font size="+2">**Collection** </font> <br> | |
+| <br><br> **Collection** <br> | |
 | _.filter(collection, [iteratee= _.identity]) | _.filter(iteratee)(collection) <br> _.filter(collection, iteratee)|
 | _.find(collection, [iteratee= _.identity], <s>[fromIndex=0]</s>) | _.find(iteratee)(collection) <br>  _.find(collection, iteratee)|
 | _.forEach(collection, [iteratee= _.identity]) | _.forEach(iteratee)(collection) <br> _.forEach(collection, iteratee)|
@@ -37,6 +37,6 @@
 | _.reduce(collection, [iteratee= _.identity], [accumulator]) | _.reduce(accumulator)(iteratee)(collection) <br>  _.reduce(iteratee, accumulator)(collection) <br> _.reduce(collection, iteratee, accumulator) |
 | _.reject(collection, [iteratee= _.identity ]) | _.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |
 | _.size(collection) | _.size(collection) |
-| <font size="-2">`_.sortBy(collection, [iteratees=[ _.identity]])`</font> | _.sortBy(iteratees)(collection) <br> _.sortBy(collection, iteratees) |
+| _.sortBy(collection, [iteratees=[ _.identity]]) | _.sortBy(iteratees)(collection) <br> _.sortBy(collection, iteratees) |
 | <br><br> **Date** <br> | |
-| <font size="-2">`_.now()`</font> | _.now() |
+| _.now() | _.now() |

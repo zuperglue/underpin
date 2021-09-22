@@ -650,6 +650,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
   describe('Array',  function () {
     it("chunk", function () {
       expect( _.chunk([1,2,3],2) ).to.be.an('array').eql([[1,2],[3]]);
+      expect( _.chunk([1,2,3],undefined) ).to.be.an('array').eql([[1],[2],[3]]);
       expect( _.chunk('abc',2) ).to.be.an('array').eql([['a','b'],['c']]);
       expect( _.chunk('abc',0) ).to.be.an('array').eql([]);
       expect( _.chunk(null,2) ).to.be.an('array').eql([]);
@@ -712,6 +713,8 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.drop([], 1) ).to.be.eql([]);
       expect( _.drop(null,0) ).to.be.eql([], '3');
       expect( _.drop(arrIntLarge,100000) ).to.be.an('array');
+      expect( _.drop([1,2,3,4], undefined) ).to.be.eql([2,3,4]);
+
       if (FP) {
         expect( _.drop(1)([1,2,3,4]) ).to.be.eql([2,3,4]);
       }
@@ -773,6 +776,8 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.join('abc', '-') ).to.be.eql('a-b-c');
       expect( _.join(null,UNDEF_SPLITTER) ).to.be.eql('');
       expect( _.join(arrIntLarge,'') ).to.be.an('string');
+      expect( _.join([1,2,3], undefined) ).to.be.eql('1,2,3');
+
       if (FP) {
         expect( _.join('-')([1,2,3]) ).to.be.eql('1-2-3');
       }
@@ -1260,11 +1265,13 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     });
     it("result",  function () {
       expect( _.result({a:1},'a') ).to.eql(1)
+
       expect( _.result({a:1},'b') ).to.eql(undefined)
       expect( _.result({a:1},'b', null) ).to.eql(null) // result dose return default when property is undefined
       expect( _.result({a:()=>'x'},'a') ).to.eql('x')
       expect( _.result({a:()=>undefined},'a', null) ).to.eql(undefined) // result dose NOT return default when func return undefined !!!
       if (isChugging) {
+        expect( _.result({a:1},'b',_.falsyTo(null)) ).to.eql(null)
         expect(_.result({a: (v) => v}, 'a', 'y')).to.eql('y') // If default value is specified, it's supplied as arg to func
       }
       expect( _.result(null,'a') ).to.eql(undefined)
@@ -1838,6 +1845,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( [3,2,1].sort(_.by() ) ).to.be.eql([1,2,3]);
         expect( [1,2,3,11].sort(_.by([],['desc']) ) ).to.be.eql([11,3,2,1]);
         expect( [1,2,3,11].sort(_.by((v)=>v) ) ).to.be.eql([1,2,3,11]);
+        expect( [1,2,3,11].sort(_.by(null, null) ) ).to.be.eql([1,2,3,11]);
 
       });
       it("compareValues", function () {

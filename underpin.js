@@ -60,7 +60,7 @@ api.lt = (v1, v2) => v1 < v2
 api.lte = (v1, v2) => isStrings(v1, v2) ? api.toNumber(v1) <= api.toNumber(v2) : v1 <= v2  // Object is string?
 
 /* Array ************************************/
-api.chunk = (a, size) => {
+api.chunk = (a, size = 1) => {
   if (!api.isNumber(size) || size < 1 ) return []
   const arr = api.toArray(a)
   const n = Math.ceil(arr.length / size)

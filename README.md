@@ -37,6 +37,6 @@
 | | _.reduce(collection, [iteratee= _.identity], [accumulator]) | _.reduce(accumulator)(iteratee)(collection) <br>  _.reduce(iteratee, accumulator)(collection) <br> _.reduce(collection, iteratee, accumulator) |
 | | _.reject(collection, [iteratee= _.identity ]) | _.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |
 | | _.size(collection) | _.size(collection) |
-| | _.sortBy(collection, [iteratees=[ _.identity]]) | _.sortBy(iteratees)(collection) <br> _.sortBy(collection, iteratees) |
+| | sortBy(collection, [iteratees=[ _.identity]]) | sortBy(iteratees)(collection) <br> sortBy(collection, iteratees) |
 | <br><br>:black_small_square: | <br><br> **Date** | |
-| | _.now() | _.now() |
+| | now() | now() |

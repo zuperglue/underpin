@@ -77,4 +77,11 @@
 | | [lt(value, other)](https://lodash.com/docs/4.17.15#lt) | lt(other)(value) <br> lt(value, other) |
 | | [lte(value, other)](https://lodash.com/docs/4.17.15#lte) | lte(other)(value) <br> lte(value, other) |
 | | [toArray(value)](https://lodash.com/docs/4.17.15#toArray) | toArray(value) |
+| | [toInteger(value)](https://lodash.com/docs/4.17.15#toInteger) | toInteger(value) |
+| | [toNumber(value)](https://lodash.com/docs/4.17.15#toNumber) | toNumber(value) |
+| | [toString(value)](https://lodash.com/docs/4.17.15#toString) | toString(value) |
+| <br><br>:black_small_square: | <br><br> **Math** | |
+| | [max(array)](https://lodash.com/docs/4.17.15#max) | max(array) |
+| | [maxBy(array, [iteratee=identity])](https://lodash.com/docs/4.17.15#maxBy) | maxBy(iteratee)(array) <br> maxBy(array,iteratee) |
+
 

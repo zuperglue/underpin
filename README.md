@@ -39,4 +39,4 @@
 | _.size(collection) | _.size(collection) |
 | _.sortBy(collection, [iteratees=[ _.identity]]) | _.sortBy(iteratees)(collection) <br> _.sortBy(collection, iteratees) |
 | <br><br> **Date** <br> | |
-| _.now() | _.now() |
+| :black_small_square: _.now() | _.now() |

@@ -10,7 +10,7 @@
 | | concat(array, [values]) | concat(values)(array) <br> concat(array, values)  |
 | | difference(array, [values]) | difference(values)(array) <br>  difference(array,values) |
 | | drop(array, [n=1]) | drop(n)(array) <br> drop(array, n) |
-| | dropWhile(array, [predicate=identity]) | dropWhile(predicate)(array) <br> _.dropWhile(array, predicate) |
+| | dropWhile(array, [predicate=identity]) | dropWhile(predicate)(array) <br> dropWhile(array, predicate) |
 | | first(array) | first(array) |
 | | flatten(array) | flatten(array) |
 | | fromPairs(pairs) | fromPairs(pairs) |
@@ -60,4 +60,21 @@
 | | [isError(value)](https://lodash.com/docs/4.17.15#isError) | isError(value) |
 | | [isFunction(value)](https://lodash.com/docs/4.17.15#isFunction) | isFunction(value) |
 | | [isInteger(value)](https://lodash.com/docs/4.17.15#isInteger) | isInteger(value) |
+| | [isLength(value)](https://lodash.com/docs/4.17.15#isLength) | isLength(value) |
+| | [isMap(value)](https://lodash.com/docs/4.17.15#isMap) | isMap(value) |
+| | [isMatch(object, source)](https://lodash.com/docs/4.17.15#isMatch) | isMatch(source)(object) <br> isMatch(object, source) |
+| | [isNaN(value)](https://lodash.com/docs/4.17.15#isNaN) | isNaN(value) |
+| | [isNil(value)](https://lodash.com/docs/4.17.15#isNil) | isNil(value) |
+| | [isNull(value)](https://lodash.com/docs/4.17.15#isNull) | isNull(value) |
+| | [isNumber(value)](https://lodash.com/docs/4.17.15#isNumber) | isNumber(value) |
+| | [isObject(value)](https://lodash.com/docs/4.17.15#isObject) | isObject(value) |
+| | [isPlainObject(value)](https://lodash.com/docs/4.17.15#isPlainObject) | isPlainObject(value) |
+| | [isRegExp(value)](https://lodash.com/docs/4.17.15#isRegExp) | isRegExp(value) |
+| | [isSet(value)](https://lodash.com/docs/4.17.15#isSet) | isSet(value) |
+| | [isString(value)](https://lodash.com/docs/4.17.15#isString) | isString(value) |
+| | [isSymbol(value)](https://lodash.com/docs/4.17.15#isSymbol) | isSymbol(value) |
+| | [isUndefined(value)](https://lodash.com/docs/4.17.15#isUndefined) | isUndefined(value) |
+| | [lt(value, other)](https://lodash.com/docs/4.17.15#lt) | lt(other)(value) <br> lt(value, other) |
+| | [lte(value, other)](https://lodash.com/docs/4.17.15#lte) | lte(other)(value) <br> lte(value, other) |
+| | [toArray(value)](https://lodash.com/docs/4.17.15#toArray) | toArray(value) |
 

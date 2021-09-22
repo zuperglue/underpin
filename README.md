@@ -33,10 +33,10 @@
 | | _.groupBy(collection, [iteratee= _.identity]) | _.groupBy(iteratee)(collection) <br> _.groupBy(collection, iteratee)|
 | | _.includes(collection, value, <s>[fromIndex=0]</s>)  | _.includes(value)(collection) <br> _.includes(collection, value)|
 | | _.map(collection, [iteratee= _.identity]) | _.map(iteratee)(collection) <br> _.map(collection, iteratee) |
-| :heavy_division_sign: | _.orderBy(collection, [iteratees=[ _.identity ]], [orders]) | **_.orderBy(iteratees)(collection)** <br>  _.orderBy(collection, iteratees, orders) |
-| :heavy_minus_sign: | _.reduce(collection, [iteratee= _.identity], [accumulator]) | _.reduce(accumulator)(iteratee)(collection) <br>  _.reduce(iteratee, accumulator)(collection) <br> _.reduce(collection, iteratee, accumulator) |
-| :heavy_multiplication_x: | _.reject(collection, [iteratee= _.identity ]) | _.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |
-| :heavy_plus_sign: | _.size(collection) | _.size(collection) |
-| :white_small_square: | _.sortBy(collection, [iteratees=[ _.identity]]) | _.sortBy(iteratees)(collection) <br> _.sortBy(collection, iteratees) |
+| | _.orderBy(collection, [iteratees=[ _.identity ]], [orders]) | **_.orderBy(iteratees)(collection)** <br>  _.orderBy(collection, iteratees, orders) |
+| | _.reduce(collection, [iteratee= _.identity], [accumulator]) | _.reduce(accumulator)(iteratee)(collection) <br>  _.reduce(iteratee, accumulator)(collection) <br> _.reduce(collection, iteratee, accumulator) |
+| | _.reject(collection, [iteratee= _.identity ]) | _.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |
+| | _.size(collection) | _.size(collection) |
+| | _.sortBy(collection, [iteratees=[ _.identity]]) | _.sortBy(iteratees)(collection) <br> _.sortBy(collection, iteratees) |
 | <br><br>:black_small_square: | <br><br> **Date** | |
-| = | _.now() | _.now() |
+| | _.now() | _.now() |

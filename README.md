@@ -10,8 +10,8 @@
 |**_.concat(array, [values])** | _.concat(values)(array) <br> _.concat(array, values)  |
 |**_.difference(array, [values])** | _.difference(values)(array) <br>  _.difference(array,values) |
 |**_.drop(array, [n=1])** | _.drop(n)(array) <br> _.drop(array, n) |
-|**_.dropWhile(array, [predicate=_.identity])** | _.dropWhile(predicate)(array) <br> _.dropWhile(array, predicate)|
-|**_.first(array)**| _.first(array) |
+|**_.dropWhile(array, [predicate=_.identity])** | _.dropWhile(predicate)(array) <br> _.dropWhile(array, predicate) |
+|**_.first(array)** | _.first(array) |
 |**_.flatten(array)** | _.flatten(array) |
 |**_.fromPairs(pairs)** | _.fromPairs(pairs) |
 |**_.head(array)** | _.head(array) |
@@ -33,6 +33,6 @@
 |**_.groupBy(collection, [iteratee=_.identity])** | _.groupBy(iteratee)(collection) <br> _.groupBy(collection, iteratee)|
 |**_.includes(collection, value, <s>[fromIndex=0]</s>)** | _.includes(value)(collection) <br> _.includes(collection, value)|
 |**_.map(collection, [iteratee=_.identity])** | _.map(iteratee)(collection) <br> _.map(collection, iteratee) |
-|**_.orderBy(collection, [iteratees=[_.identity]], [orders])**| **_.orderBy(iteratees)(collection)** <br>  _.orderBy(collection, iteratees, orders) |
+|**_.orderBy(collection, [iteratees=[_.identity]], [orders])** | **_.orderBy(iteratees)(collection)** <br>  _.orderBy(collection, iteratees, orders) |
 |**_.reduce(collection, [iteratee=_.identity], [accumulator])** | _.reduce(accumulator)(iteratee)(collection) <br>  _.reduce(iteratee, accumulator)(collection) <br> _.reduce(collection, iteratee, accumulator) |
-|**_.reject(collection, [iteratee=_.identity])**|_.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |
+|**_.reject(collection, [iteratee=_.identity])** | _.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |

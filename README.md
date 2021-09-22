@@ -45,19 +45,19 @@
 | | negate(predicate) | negate(predicate) |
 |  |
 | <br><br>:black_small_square: | <br><br> **Lang** | |
-| | castArray(value) | castArray(value) |
-| | conformsTo(object, source) |  conformsTo(source)(object) <br> conformsTo(object, source) |
-| | eq(value, other) | eq(other)(value) <br> eq(value, other) |
-| | gt(value, other) | gt(other)(value) <br> gt(value, other) |
-| | gte(value, other) | gte(other)(value) <br> gte(value, other) |
-| | isArray(value) | isArray(value) |
-| | isArrayLike(value) | isArrayLike(value) |
-| | isBoolean(value) | isBoolean(value) |
-| | isBuffer(value) | isBuffer(value) |
-| | isDate(value) | isDate(value) |
-| | isEmpty(value) | isEmpty(value) |
-| | isEqual(value, other) | isEqual(other)(value) <br> isEqual(value, other) |
-| | isError(value) | isError(value) |
-| | isFunction(value) | isFunction(value) |
+| | [castArray(value)](https://lodash.com/docs/4.17.15#castArray) | castArray(value) |
+| | [conformsTo(object, source)](https://lodash.com/docs/4.17.15#conformsTo) |  conformsTo(source)(object) <br> conformsTo(object, source) |
+| | [eq(value, other)](https://lodash.com/docs/4.17.15#eq) | eq(other)(value) <br> eq(value, other) |
+| | [gt(value, other)](https://lodash.com/docs/4.17.15#gt) | gt(other)(value) <br> gt(value, other) |
+| | [gte(value, other)](https://lodash.com/docs/4.17.15#gte) | gte(other)(value) <br> gte(value, other) |
+| | [isArray(value)](https://lodash.com/docs/4.17.15#isArray) | isArray(value) |
+| | [isArrayLike(value)](https://lodash.com/docs/4.17.15#isArrayLike) | isArrayLike(value) |
+| | [isBoolean(value)](https://lodash.com/docs/4.17.15#isBoolean) | isBoolean(value) |
+| | [isBuffer(value)](https://lodash.com/docs/4.17.15#isBuffer) | isBuffer(value) |
+| | [isDate(value)](https://lodash.com/docs/4.17.15#isDate) | isDate(value) |
+| | [isEmpty(value)](https://lodash.com/docs/4.17.15#isEmpty) | isEmpty(value) |
+| | [isEqual(value, other)](https://lodash.com/docs/4.17.15#isEqual) | isEqual(other)(value) <br> isEqual(value, other) |
+| | [isError(value)](https://lodash.com/docs/4.17.15#isError) | isError(value) |
+| | [isFunction(value)](https://lodash.com/docs/4.17.15#isFunction) | isFunction(value) |
 | | [isInteger(value)](https://lodash.com/docs/4.17.15#isInteger) | isInteger(value) |
 

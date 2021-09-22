@@ -26,7 +26,7 @@
 | _.xor([array1],[array2]) | _.xor(array2)(array1) <br> _.xor(array1, array2)|
 | _.zipObject([props=[]], [values=[]]) | _.zipObject(values)(props) <br> _.zipObject(props, values)|
 |  |
-| <br><br> **Collection** |
+| <br><br> **Collection** <br> | |
 | _.filter(collection, [iteratee=_.identity]) | _.filter(iteratee)(collection) <br> _.filter(collection, iteratee)|
 | _.find(collection, [iteratee=_.identity], <s>[fromIndex=0]</s>) | _.find(iteratee)(collection) <br>  _.find(collection, iteratee)|
 | _.forEach(collection, [iteratee=_.identity]) | _.forEach(iteratee)(collection) <br> _.forEach(collection, iteratee)|

@@ -40,3 +40,6 @@
 | | sortBy(collection, [iteratee=identity]) | sortBy(iteratees)(collection) <br> sortBy(collection, iteratees) |
 | <br><br>:black_small_square: | <br><br> **Date** | |
 | | now() | now() |
+| <br><br>:black_small_square: | <br><br> **Function** | |
+| | memoize(func, [resolver], [maxSize]) | memoize(func, [resolver], [maxSize]) |
+| | negate(predicate) | negate(predicate) |

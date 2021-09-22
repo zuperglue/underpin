@@ -4,7 +4,7 @@
 
 | | underpin      | underpin / fp |
 | ----------- | ----------- | ----------- |
-| | <br><br>**Array** <br> |
+| <br><br>:black_small_square: | <br><br>**Array** <br> |
 | | _.chunk(array, [size=1]) |_.chunk(size)(array) <br> _.chunk(array, size) |
 | | _.compact(array) | _.compact(array)|
 | | _.concat(array, [values]) | _.concat(values)(array) <br> _.concat(array, values)  |
@@ -26,7 +26,7 @@
 | | _.xor([array1],[array2]) | _.xor(array2)(array1) <br> _.xor(array1, array2)|
 | | _.zipObject([props=[]], [values=[]]) | _.zipObject(values)(props) <br> _.zipObject(props, values)|
 |  |
-| | <br><br> **Collection** <br> | |
+| <br><br>:black_small_square: | <br><br> **Collection** <br> | |
 | | _.filter(collection, [iteratee= _.identity]) | _.filter(iteratee)(collection) <br> _.filter(collection, iteratee)|
 | | _.find(collection, [iteratee= _.identity], <s>[fromIndex=0]</s>) | _.find(iteratee)(collection) <br>  _.find(collection, iteratee)|
 | | _.forEach(collection, [iteratee= _.identity]) | _.forEach(iteratee)(collection) <br> _.forEach(collection, iteratee)|
@@ -38,5 +38,5 @@
 | :heavy_multiplication_x: | _.reject(collection, [iteratee= _.identity ]) | _.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |
 | :heavy_plus_sign: | _.size(collection) | _.size(collection) |
 | :white_small_square: | _.sortBy(collection, [iteratees=[ _.identity]]) | _.sortBy(iteratees)(collection) <br> _.sortBy(collection, iteratees) |
-| | <br><br> **Date** <br> | |
+| <br><br>:black_small_square: | <br><br> **Date** | |
 | :black_small_square: | _.now() | _.now() |

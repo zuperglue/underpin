@@ -27,16 +27,16 @@
 | | _.zipObject([props=[]], [values=[]]) | _.zipObject(values)(props) <br> _.zipObject(props, values)|
 |  |
 | <br><br>:black_small_square: | <br><br> **Collection** <br> | |
-| | _.filter(collection, [iteratee= _.identity]) | _.filter(iteratee)(collection) <br> _.filter(collection, iteratee)|
-| | _.find(collection, [iteratee= _.identity], <s>[fromIndex=0]</s>) | _.find(iteratee)(collection) <br>  _.find(collection, iteratee)|
-| | _.forEach(collection, [iteratee= _.identity]) | _.forEach(iteratee)(collection) <br> _.forEach(collection, iteratee)|
-| | _.groupBy(collection, [iteratee= _.identity]) | _.groupBy(iteratee)(collection) <br> _.groupBy(collection, iteratee)|
-| | _.includes(collection, value, <s>[fromIndex=0]</s>)  | _.includes(value)(collection) <br> _.includes(collection, value)|
-| | _.map(collection, [iteratee= _.identity]) | _.map(iteratee)(collection) <br> _.map(collection, iteratee) |
-| | _.orderBy(collection, [iteratees=[ _.identity ]], [orders]) | **_.orderBy(iteratees)(collection)** <br>  _.orderBy(collection, iteratees, orders) |
-| | _.reduce(collection, [iteratee= _.identity], [accumulator]) | _.reduce(accumulator)(iteratee)(collection) <br>  _.reduce(iteratee, accumulator)(collection) <br> _.reduce(collection, iteratee, accumulator) |
-| | _.reject(collection, [iteratee= _.identity ]) | _.reject(iteratee)(collection) <br> _.reject(collection, iteratee) |
-| | _.size(collection) | _.size(collection) |
+| | filter(collection, [iteratee= _.identity]) | filter(iteratee)(collection) <br> filter(collection, iteratee)|
+| | find(collection, [iteratee= _.identity], <s>[fromIndex=0]</s>) | find(iteratee)(collection) <br> find(collection, iteratee)|
+| | forEach(collection, [iteratee= _.identity]) | forEach(iteratee)(collection) <br> forEach(collection, iteratee)|
+| | groupBy(collection, [iteratee= _.identity]) | groupBy(iteratee)(collection) <br> groupBy(collection, iteratee)|
+| | includes(collection, value, <s>[fromIndex=0]</s>)  | includes(value)(collection) <br> includes(collection, value)|
+| | map(collection, [iteratee= _.identity]) | map(iteratee)(collection) <br> map(collection, iteratee) |
+| | orderBy(collection, [iteratees=[ _.identity ]], [orders]) | orderBy(iteratees)(collection) <br>  orderBy(collection, iteratees, orders) |
+| | reduce(collection, [iteratee= _.identity], [accumulator]) | reduce(accumulator)(iteratee)(collection) <br>  reduce(iteratee, accumulator)(collection) <br> reduce(collection, iteratee, accumulator) |
+| | reject(collection, [iteratee= _.identity ]) | reject(iteratee)(collection) <br> reject(collection, iteratee) |
+| | size(collection) | size(collection) |
 | | sortBy(collection, [iteratees=[ _.identity]]) | sortBy(iteratees)(collection) <br> sortBy(collection, iteratees) |
 | <br><br>:black_small_square: | <br><br> **Date** | |
 | | now() | now() |

@@ -5,26 +5,26 @@
 | | underpin      | underpin / fp |
 | ----------- | ----------- | ----------- |
 | <br><br>:black_small_square: | <br><br>**Array** <br> |
-| | _.chunk(array, [size=1]) |_.chunk(size)(array) <br> _.chunk(array, size) |
-| | _.compact(array) | _.compact(array)|
-| | _.concat(array, [values]) | _.concat(values)(array) <br> _.concat(array, values)  |
-| | _.difference(array, [values]) | _.difference(values)(array) <br>  _.difference(array,values) |
-| | _.drop(array, [n=1]) | _.drop(n)(array) <br> _.drop(array, n) |
-| | _.dropWhile(array, [predicate= _.identity]) | _.dropWhile(predicate)(array) <br> _.dropWhile(array, predicate) |
-| | _.first(array) | _.first(array) |
-| | _.flatten(array) | _.flatten(array) |
-| | _.fromPairs(pairs) | _.fromPairs(pairs) |
-| | _.head(array) | _.head(array) |
-| | _.intersection([array1],[array2]) | _.intersection(array2)(array1) <br> _.intersection(array1, array2)|
-| | _.join(array, [separator=',']) | _.join(separator)(array) <br>  _.join(array, separator) |
-| | _.last(array) | _.last(array) |
-| | _.reverse(array) | _.reverse(array) |
-| | _.slice(array, [start=0], [end=array.length]) | _.slice(length)(start)(array) <br> _.slice(start, length)(array) <br> _.slice(array, start, length) |
-| | _.tail(array) | _.tail(array) |
-| | _.union([array1],[array2]) | _.union(array2)(array1) <br> _.union(array1, array2)|
-| | _.uniq(array) | _.uniq(array) |
-| | _.xor([array1],[array2]) | _.xor(array2)(array1) <br> _.xor(array1, array2)|
-| | _.zipObject([props=[]], [values=[]]) | _.zipObject(values)(props) <br> _.zipObject(props, values)|
+| | chunk(array, [size=1]) | chunk(size)(array) <br> chunk(array, size) |
+| | compact(array) | compact(array)|
+| | concat(array, [values]) | concat(values)(array) <br> concat(array, values)  |
+| | difference(array, [values]) | difference(values)(array) <br>  difference(array,values) |
+| | drop(array, [n=1]) | drop(n)(array) <br> drop(array, n) |
+| | dropWhile(array, [predicate=identity]) | dropWhile(predicate)(array) <br> _.dropWhile(array, predicate) |
+| | first(array) | first(array) |
+| | flatten(array) | flatten(array) |
+| | fromPairs(pairs) | fromPairs(pairs) |
+| | head(array) | head(array) |
+| | intersection([array1],[array2]) | intersection(array2)(array1) <br> intersection(array1, array2)|
+| | join(array, [separator=',']) | join(separator)(array) <br>  join(array, separator) |
+| | last(array) | last(array) |
+| | reverse(array) | reverse(array) |
+| | slice(array, [start=0], [end=array.length]) | slice(length)(start)(array) <br> slice(start, length)(array) <br> _.slice(array, start, length) |
+| | tail(array) | tail(array) |
+| | union([array1],[array2]) | union(array2)(array1) <br> union(array1, array2)|
+| | uniq(array) | uniq(array) |
+| | xor([array1],[array2]) | xor(array2)(array1) <br> xor(array1, array2)|
+| | zipObject([props=[]], [values=[]]) | zipObject(values)(props) <br> zipObject(props, values)|
 |  |
 | <br><br>:black_small_square: | <br><br> **Collection** <br> | |
 | | filter(collection, [iteratee=identity]) | filter(iteratee)(collection) <br> filter(collection, iteratee)|
@@ -43,3 +43,21 @@
 | <br><br>:black_small_square: | <br><br> **Function** | |
 | | memoize(func, [resolver], [maxSize]) | memoize(func, [resolver], [maxSize]) |
 | | negate(predicate) | negate(predicate) |
+|  |
+| <br><br>:black_small_square: | <br><br> **Lang** | |
+| | castArray(value) | castArray(value) |
+| | conformsTo(object, source) |  conformsTo(source)(object) <br> conformsTo(object, source) |
+| | eq(value, other) | eq(other)(value) <br> eq(value, other) |
+| | gt(value, other) | gt(other)(value) <br> gt(value, other) |
+| | gte(value, other) | gte(other)(value) <br> gte(value, other) |
+| | isArray(value) | isArray(value) |
+| | isArrayLike(value) | isArrayLike(value) |
+| | isBoolean(value) | isBoolean(value) |
+| | isBuffer(value) | isBuffer(value) |
+| | isDate(value) | isDate(value) |
+| | isEmpty(value) | isEmpty(value) |
+| | isEqual(value, other) | isEqual(other)(value) <br> isEqual(value, other) |
+| | isError(value) | isError(value) |
+| | isFunction(value) | isFunction(value) |
+| | isInteger(value) | isInteger(value) |
+

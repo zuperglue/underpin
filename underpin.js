@@ -112,8 +112,9 @@ api.zipObject = (a1,a2) => {
 /* Collection ********************************/
 api.forEach = (a, f) => {
   if (!api.isFunction(f)) return a;
-  if (api.isArrayLike(a)) api.toArray(a).forEach((v,i)=>f(v,i,a))
-  if (api.isObject(a)) api.keys(a).forEach((k)=>f(a[k],k,a))
+  if (api.isArrayLike(a)) { api.toArray(a).forEach((v,i)=>f(v,i,a)); return a }
+  if (api.isSet(a)) { const aSet = api.toArray(a);  aSet.forEach((v,i)=>f(v,i, aSet)); return a }
+  if (api.isObject(a)) { api.keys(a).forEach((k)=>f(a[k],k,a)); return a }
   return a
 }
 api.filter = (a,f) => api.toArray(a).filter(api.iteratee(f))

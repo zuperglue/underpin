@@ -130,6 +130,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     it("isArrayLike", function () {
       expect( _.isArrayLike([]) ).to.be.an('boolean').eq(true);
       expect( _.isArrayLike('abc') ).to.be.an('boolean').eq(true);
+      expect( _.isArrayLike(new Set([1,2])) ).to.be.an('boolean').eq(false);
       expect( _.isArrayLike({}) ).to.be.an('boolean').eq(false);
       expect( _.isArrayLike(()=>1) ).to.be.an('boolean').eq(false);
       expect ( arrIntLarge.forEach( v => _.isArrayLike(v))).to.be.an('undefined');
@@ -919,18 +920,32 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       }
     });
     it("forEach", function () {
+      let count = 0;
       _.forEach([1,2,3], (v,i,a) => {
         expect(v).to.be.an('number').eql(a[i])
+        count++;
       })
+      expect(count).to.be.eql(3 , 'forEach array');
+      count = 0;
       _.forEach('abc', (v,i,s) => {
         expect(v).to.be.an('string').eql(s[i])
+        count++;
       })
+      expect(count).to.be.eql(3 , 'forEach string');
+      count = 0;
       _.forEach({a:1,b:2,c:3}, (v,k,o) => {
         expect(v).to.be.an('number').eql(o[k])
+        count++;
       })
-      _.forEach(new Set([1,2,3]), (v,i,a) => {
-        expect(v).to.be.an('number').eql(a[i])
-      })
+      expect(count).to.be.eql(3 , 'forEach object');
+      if (isChugging) {
+        count = 0;
+        _.forEach(new Set([1, 2, 3]), (v, i, a) => {
+          expect(v).to.be.an('number').eql(a[i])
+          count++;
+        })
+        expect(count).to.be.eql(3, 'forEach set');
+      }
       expect(_.forEach([1,2.3],undefined)).to.be.an('array').eql([1,2.3])
       expect(_.forEach('abc',undefined)).to.be.an('string').eql('abc')
       expect(_.forEach({a:1,b:2,c:3},undefined)).to.be.an('object').eql({a:1,b:2,c:3})
@@ -1271,7 +1286,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.result({a:()=>'x'},'a') ).to.eql('x')
       expect( _.result({a:()=>undefined},'a', null) ).to.eql(undefined) // result dose NOT return default when func return undefined !!!
       if (isChugging) {
-        expect( _.result({a:1},'b',_.falsyTo(null)) ).to.eql(null)
+        expect( _.result({a:1},'b',(v) => _.falsyTo(v,null)) ).to.eql(null)
         expect(_.result({a: (v) => v}, 'a', 'y')).to.eql('y') // If default value is specified, it's supplied as arg to func
       }
       expect( _.result(null,'a') ).to.eql(undefined)

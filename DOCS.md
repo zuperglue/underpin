@@ -1,3 +1,9 @@
+## Size & dependecies
+[https://bundlephobia.com/package/underpin](https://bundlephobia.com/package/underpin)
+
+## Playground
+[https://runkit.com/](https://runkit.com/)
+
 ## API
 
 | | underpin      | underpin / fp |
@@ -39,7 +45,7 @@
 | <br><br>:black_small_square: | <br><br> **Date** | |
 | | now() | now() |
 | <br><br>:black_small_square: | <br><br> **Function** | |
-| | memoize(func, [resolver], [maxSize]) | memoize(func, [resolver], [maxSize]) |
+| | memoize(func, [resolver], *[maxSize]*) | memoize(func, [resolver], *[maxSize]*) |
 | | negate(predicate) | negate(predicate) |
 |  |
 | <br><br>:black_small_square: | <br><br> **Lang** | |

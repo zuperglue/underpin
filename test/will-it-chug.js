@@ -33,9 +33,9 @@ const instrument = () => {
   }
 }
 const memory = instrument()
-
+const t0 = Date.now()
 const _ = require(testPackageName) // after we intrument memory
-
+console.log('Loaded in (ms):', (Date.now()-t0))
 const UNDEF_ARR = []
 const UNDEF_INT = 0
 const UNDEF_1 = 1
@@ -77,6 +77,19 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
   afterEach(function() {
     //memory()
   });
+  describe('_()',  function () {
+    it("chain", function () {
+      expect( _().value() ).to.be.eql(undefined);
+      expect( _(null).value() ).to.be.eql(null);
+      expect( _('a').value() ).to.be.eql('a');
+      expect( _(1).value() ).to.be.eql(1);
+      expect( _({a:1}).value() ).to.be.eql({a:1});
+      expect( _([1,2,3]).value() ).to.be.eql([1,2,3]);
+      expect( _(arrIntLarge).filter().map().filter().value() ).to.be.an('array');
+      expect ( arrIntLarge.forEach( v => _([1,2,3]).filter().value() )).to.be.eql(undefined);
+
+    })
+  })
 
   describe('Lang',  function () {
     it("castArray",  function () {

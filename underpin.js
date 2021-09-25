@@ -1,7 +1,13 @@
 "use strict";
 const {isDeepStrictEqual} = require('util');
-const api = { VERSION : require('./package.json').version }
+const api = (v) => {
+  const state = {value: v}
+  const chain = getChainedFunctions('dummy', state);
+  chain.value = () => state.value
+  return chain
+}
 
+api.VERSION = require('./package.json').version;
 /* Lang ************************************** */
 api.castArray = (...a) => api.isArray(a[0]) ? a[0] : api.isSet(a[0]) ? [...a[0]] : (a.length == 0) ? [] : [a[0]]
 api.isType = (name) => (obj => Object.prototype.toString.call(obj) === '[object ' + name + ']')
@@ -32,8 +38,8 @@ api.isLength = (len) => typeof len === 'number' && len > -1 && len % 1 == 0 && l
 api.isEmpty = (o) => !api.size(o)
 api.isUndefined = (o) => o === undefined
 api.toArray = (o) => {
-  if (api.isArray(o)) return api.concat(o)  // make copy as Lodash?
-  //if (api.isArray(o)) return o  // passthrough?
+  //if (api.isArray(o)) return api.concat(o)  // make copy as Lodash?
+  if (api.isArray(o)) return o  // or passthrough?
   if (api.isString(o)) return o.split('')
   if (api.isSet(o)) return [...o]
   if (api.isObject(o)) return Object.values(o)
@@ -517,5 +523,15 @@ const countWhile = (a, p) => {
   while( (i < a.length) && predicate(a[i],i,a)) i++;
   return i
 }
+const getChainedFunctions = api.memoize((dummy, state) => {
+  const chain = {};
+  Object.keys(api).forEach(name => chain[name] = (...args) => {
+    state.value = api[name](state.value, ...args);
+    return chain
+  })
+  return chain
+}, null, 1)
+
+
 
 module.exports = api

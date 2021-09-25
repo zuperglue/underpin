@@ -1,7 +1,8 @@
 "use strict";
 const _ = require ('./underpin')
-const api = { VERSION : _.VERSION }
-
+const api = (v) => {
+  return _(v)
+}
 
 /*
   Curried to arity 2 => reverse argument order for partials

@@ -270,7 +270,7 @@ api.keysIn = (o) => api.tap([], (keys) => {for (let key in o) keys.push(key)} )
 api.mapKeys = (o, f) => {
   return api.reduce(api.keys(o), (obj,k)=> {
     const value = o[k]
-    const key = api.isFunction(f) ? f(value ,k, o) || k : api.isObject(f) ? api.result(f, k, k) || k : k
+    const key = api.isFunction(f) ? f(k, value, o) || k : api.isObject(f) ? api.result(f, k, k) || k : k
     return Object.assign(obj, { [key]: value } )
   }, {})
 }

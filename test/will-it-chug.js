@@ -1232,17 +1232,17 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.keysIn(objLarge) ).to.have.lengthOf(arrIntLarge.length)
     });
     it("mapKeys",  function () {
-      expect( _.mapKeys({a:1,b:2},(v,k)=> k+v) ).to.be.an('object').eql({a1:1,b2:2})
       if (isChugging) {
+        expect( _.mapKeys({a:1,b:2},(k,v)=> k+v) ).to.be.an('object').eql({a1:1,b2:2}) // diffrent callback order than lodash
         expect( _.mapKeys({a:1,b:2},{a:'x', b:'y'}) ).to.be.an('object').eql({x:1,y:2})
         expect( _.mapKeys({a:1,b:2,c:3},{a: _.toUpper, b: _.noop}) ).to.be.an('object').eql({A:1, b:2, c:3}) // falsey func result => key unchanged
-        expect( _.mapKeys({a:1,b:2},(v,k)=> undefined) ).to.be.an('object').eql({a:1,b:2}) // lodash messes up
-        expect( _.mapKeys({a:1,b:2},(v,k)=> null) ).to.be.an('object').eql({a:1,b:2})  // lodash messes up
+        expect( _.mapKeys({a:1,b:2},(k,v)=> undefined) ).to.be.an('object').eql({a:1,b:2}) // lodash messes up
+        expect( _.mapKeys({a:1,b:2},(k,v)=> null) ).to.be.an('object').eql({a:1,b:2})  // lodash messes up
         expect( _.mapKeys({a:1,b:2}, null) ).to.be.an('object').eql({a:1,b:2}) // lodash messes up
       }
       expect( _.mapKeys( Object.create(null) ,(v,k)=> k+v) ).to.be.an('object').eql({})
-      expect( _.mapKeys(null,(v,k)=> k+v) ).to.be.an('object').eql({})
-      expect( _.mapKeys(undefined,(v,k)=> k+v) ).to.be.an('object').eql({})
+      expect( _.mapKeys(null,(v,k)=> k+v) ).to.be.an('object').eql({})  // callback order specified as loadash even if wrong
+      expect( _.mapKeys(undefined,(v,k)=> k+v) ).to.be.an('object').eql({}) // callback order specified as loadash even if wrong
     });
     it("mapValues",  function () {
       expect( _.mapValues({a:1,b:2},(v,k)=> v*2) ).to.be.an('object').eql({a:2,b:4})

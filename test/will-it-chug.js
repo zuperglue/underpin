@@ -36,6 +36,7 @@ const memory = instrument()
 const t0 = Date.now()
 const _ = require(testPackageName) // after we intrument memory
 console.log('Loaded in (ms):', (Date.now()-t0))
+
 const UNDEF_ARR = []
 const UNDEF_INT = 0
 const UNDEF_1 = 1
@@ -86,7 +87,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _({a:1}).value() ).to.be.eql({a:1});
       expect( _([1,2,3]).value() ).to.be.eql([1,2,3]);
       expect( _(arrIntLarge).filter().map().filter().value() ).to.be.an('array');
-      expect ( arrIntLarge.forEach( v => _([1,2,3]).filter().value() )).to.be.eql(undefined);
+      expect ( arrIntLarge.forEach( v => _(_.range(1,100)).filter().value() )).to.be.eql(undefined);
 
     })
   })
@@ -1095,18 +1096,6 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       let end = start + 30 *1000 // Test should complete within 30
       expect( _.now() ).to.be.within(start, end)
     });
-    if (isChugging) {
-      it("today", function () {
-        let start = (new Date().valueOf() - (24 * 3600 * 1000)) // 24 hours back
-        let end = new Date().valueOf() // NOW
-        expect(_.today()).to.be.within(start, end)
-      });
-      it("tomorrow", function () {
-        let start = new Date().valueOf() // NOW
-        let end = start + 24 * 3600 * 1000 // + 24 h
-        expect(_.tomorrow()).to.be.within(start, end)
-      });
-    }
   })
 
   describe('Function',  function () {
@@ -1868,6 +1857,11 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
 
   if (isChugging) {
     describe('Extentions', function () {
+      it("argsToCacheKey", function () {
+        expect( _.argsToCacheKey('a') ).to.be.eql('a');
+        expect( _.argsToCacheKey('a', {a:1}) ).to.be.eql('a{"a":1}');
+        expect( _.argsToCacheKey('a', {a:1}, [1,2]) ).to.be.eql('a{"a":1}[1,2]');
+      });
       it("by", function () {
         // Only testing that basic function is availible, all details tested by sortBy and orderBy
         expect( [3,2,1].sort(_.by() ) ).to.be.eql([1,2,3]);
@@ -1939,6 +1933,24 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect(_.compareValues({}, {})).to.be.eql(0);
         expect(_.compareValues(NaN, NaN)).to.be.eql(0);
       });
+      it("curate", function () {
+        expect( _.curate({a:1}, 'a', [_.toString]) ).to.be.eql('1');
+        expect( _.curate({a:'a'}, 'a', [_.toUpper, _.toLower]) ).to.be.eql('a');
+      });
+      it("falsyTo", function () {
+        expect( _.falsyTo(null,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo(undefined,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo(0,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo('','falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo(NaN,'falsy') ).to.be.eql('falsy');
+        expect( _.falsyTo({},'falsy') ).to.be.eql({});
+        expect( _.falsyTo(100,'falsy') ).to.be.eql(100);
+        expect( _.falsyTo('a','falsy') ).to.be.eql('a');
+      });
+      it("hours", function () {
+        const hours = _.toDate(_.hours())
+        expect( hours.getHours() ).to.be.an('number').eql(_.toDate().getHours());
+      });
       it("isPromise", function () {
         expect(_.isPromise(Promise.resolve(1)) ).to.be.an('boolean').eql(true);
         expect(_.isPromise( new Promise((resolve,reject)=>resolve(1)) ) ).to.be.an('boolean').eql(true);
@@ -1983,27 +1995,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect(_.isToday(_.tomorrow())).to.be.an('boolean').eql(false);
         expect(_.isToday(_.toEpoch(_.today()) -1 )).to.be.an('boolean').eql(false);
       });
-      it("hour", function () {
-        const hour = _.toDate(_.hour())
-        expect( hour.getHours() ).to.be.an('number').eql(_.toDate().getHours());
-      });
-      it("minute", function () {
-        const minute = _.toDate(_.minute())
+      it("minutes", function () {
+        const minute = _.toDate(_.minutes())
         expect( minute.getMinutes() ).to.be.an('number').eql(_.toDate().getMinutes());
-      });
-      it("curate", function () {
-        expect( _.curate({a:1}, 'a', [_.toString]) ).to.be.eql('1');
-        expect( _.curate({a:'a'}, 'a', [_.toUpper, _.toLower]) ).to.be.eql('a');
-      });
-      it("falsyTo", function () {
-        expect( _.falsyTo(null,'falsy') ).to.be.eql('falsy');
-        expect( _.falsyTo(undefined,'falsy') ).to.be.eql('falsy');
-        expect( _.falsyTo(0,'falsy') ).to.be.eql('falsy');
-        expect( _.falsyTo('','falsy') ).to.be.eql('falsy');
-        expect( _.falsyTo(NaN,'falsy') ).to.be.eql('falsy');
-        expect( _.falsyTo({},'falsy') ).to.be.eql({});
-        expect( _.falsyTo(100,'falsy') ).to.be.eql(100);
-        expect( _.falsyTo('a','falsy') ).to.be.eql('a');
       });
       it("nilTo", function () {
         expect( _.nilTo(null,'falsy') ).to.be.eql('falsy');
@@ -2038,11 +2032,15 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( _.isPromise(_.rejectIfNil(null,'fail')) ).to.be.eql(true);
         expect( _.isPromise(_.rejectIfNil(undefined,'fail')) ).to.be.eql(true);
       });
-      it("argsCacheKey", function () {
-        expect( _.argsCacheKey('a') ).to.be.eql('a');
-        expect( _.argsCacheKey('a', {a:1}) ).to.be.eql('a{"a":1}');
-        expect( _.argsCacheKey('a', {a:1}, [1,2]) ).to.be.eql('a{"a":1}[1,2]');
-
+      it("today", function () {
+        let start = (new Date().valueOf() - (24 * 3600 * 1000)) // 24 hours back
+        let end = new Date().valueOf() // NOW
+        expect(_.today()).to.be.within(start, end)
+      });
+      it("tomorrow", function () {
+        let start = new Date().valueOf() // NOW
+        let end = start + 24 * 3600 * 1000 // + 24 h
+        expect(_.tomorrow()).to.be.within(start, end)
       });
 
     })

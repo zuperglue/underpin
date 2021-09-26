@@ -1,13 +1,14 @@
 "use strict";
 const {isDeepStrictEqual} = require('util');
+
 const api = (v) => {
   const state = {value: v}
   const chain = getChainedFunctions('dummy', state);
   chain.value = () => state.value
   return chain
 }
-
 api.VERSION = require('./package.json').version;
+
 /* Lang ************************************** */
 api.castArray = (...a) => api.isArray(a[0]) ? a[0] : api.isSet(a[0]) ? [...a[0]] : (a.length == 0) ? [] : [a[0]]
 api.isType = (name) => (obj => Object.prototype.toString.call(obj) === '[object ' + name + ']')
@@ -17,7 +18,10 @@ api.isBuffer = (o) => Buffer.isBuffer(o)
 api.isEqual = (o1,o2) => isDeepStrictEqual(o1,o2)
 api.isFunction = (o) => typeof o === 'function'
 api.isInteger = (o) => Number.isInteger(o)
-api.isObject = (o) => { const type = typeof o; return o != null && (type === 'object' || type === 'function') }
+api.isObject = (o) => {
+  const type = typeof o;
+  return o != null && (type === 'object' || type === 'function')
+}
 api.isString = (s) => (typeof s === 'string' || s instanceof String)
 api.isNumber = api.isType('Number')
 api.isDate = api.isType('Date')
@@ -158,16 +162,29 @@ api.size = (a) => {
 api.sortBy = (a, ...args) => api.isArray(a) ? api.concat(a).sort(api.by(...args)) : []
 
 /* Date **************************************/
-api.hour = () => {const d = new Date(); d.setHours(d.getHours(),0,0,0); return api.toEpoch(d)}
-api.isToday = (d) => {const e = api.toEpoch(d); return  (e >= api.today() && e < api.tomorrow())}
-api.minute = () => {const d = new Date(); d.setHours(d.getHours(),d.getMinutes(),0,0); return api.toEpoch(d)}
+api.hours = (len = 1) => {
+  const d = new Date();
+  const v =  Math.max(1, Math.min(59, len))
+  d.setHours(Math.floor(d.getHours() / v) * v, 0, 0, 0);
+  return api.toEpoch(d)
+}
+api.isToday = (d) => {
+  const e = api.toEpoch(d);
+  return  (e >= api.today() && e < api.tomorrow())
+}
+api.minutes = (len = 1) => {
+  const d = new Date();
+  const v =  Math.max(1, Math.min(59, len))
+  d.setHours(d.getHours(), Math.floor(d.getMinutes() / v) * v, 0, 0);
+  return api.toEpoch(d)
+}
 api.now = () => Date.now()
 api.toDate = (...args) => {
   const d = args[0]
+  if (api.isDate(d)) return d;
   if (api.toLower(d) == 'today') return new Date(api.today())
   if (api.toLower(d) == 'now') return new Date(api.now())  // dangerous tets, clock may have had tome to tick
   if (api.toLower(d) == 'tomorrow') return new Date(api.tomorrow())
-  if (api.isDate(d)) return d;
   const date = (args.length === 0) ? new Date() : new Date(...args)
   return (api.isNaN(date.valueOf())) ? new InvalidDate(date) : date
 }
@@ -476,7 +493,7 @@ api.toJSON = (j,intend = 0) => JSON.stringify(j, null,intend )
 //api.resolve = (v) => Promise.resolve(v)
 //const reject = (e) => Promise.reject(e)
 api.rejectIfNil = (v,msg) => api.isNil(v) ? Promise.reject(msg) : v
-api.argsCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v),'"'),'')
+api.argsToCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v),'"'),'')
 
 //* Internals **************************************/
 
@@ -531,7 +548,5 @@ const getChainedFunctions = api.memoize((dummy, state) => {
   })
   return chain
 }, null, 1)
-
-
 
 module.exports = api

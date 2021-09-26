@@ -223,11 +223,11 @@ api.toEpoch = _.toEpoch
 api.toJSON = _.toJSON
 api.toDate = _.toDate
 api.isToday = _.isToday
-api.hour = _.hour
-api.minute = _.minute
+api.hours = _.hours
+api.minutes = _.minutes
 //api.resolve = _.resolve
 api.rejectIfNil = curryRight(_.rejectIfNil,2)
 api.isPromise =  _.isPromise
-api.argsCacheKey =  _.argsCacheKey
+api.argsToCacheKey =  _.argsToCacheKey
 
 module.exports = api

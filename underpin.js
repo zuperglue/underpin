@@ -4,7 +4,9 @@ const {isDeepStrictEqual} = require('util');
 const api = (v) => {
   const state = {value: v}
   const chain = getChainedFunctions('dummy', state);
-  chain.value = () => state.value
+  chain.value = () => {
+    return state.value
+  } // TODO: fix state so we can freeze chain...
   return chain
 }
 api.VERSION = require('./package.json').version;
@@ -164,8 +166,8 @@ api.sortBy = (a, ...args) => api.isArray(a) ? api.concat(a).sort(api.by(...args)
 /* Date **************************************/
 api.hours = (len = 1) => {
   const d = new Date();
-  const v =  Math.max(1, Math.min(59, len))
-  d.setHours(Math.floor(d.getHours() / v) * v, 0, 0, 0);
+  const h =  Math.max(1, Math.min(24, api.toInteger(len)))
+  d.setHours(Math.floor(d.getHours() / h) * h, 0, 0, 0);
   return api.toEpoch(d)
 }
 api.isToday = (d) => {
@@ -174,8 +176,8 @@ api.isToday = (d) => {
 }
 api.minutes = (len = 1) => {
   const d = new Date();
-  const v =  Math.max(1, Math.min(59, len))
-  d.setHours(d.getHours(), Math.floor(d.getMinutes() / v) * v, 0, 0);
+  const m =  Math.max(1, Math.min(60, api.toInteger(len)))
+  d.setHours(d.getHours(), Math.floor(d.getMinutes() / m ) * m, 0, 0);
   return api.toEpoch(d)
 }
 api.now = () => Date.now()
@@ -540,6 +542,7 @@ const countWhile = (a, p) => {
   while( (i < a.length) && predicate(a[i],i,a)) i++;
   return i
 }
+
 const getChainedFunctions = api.memoize((dummy, state) => {
   const chain = {};
   Object.keys(api).forEach(name => chain[name] = (...args) => {
@@ -549,4 +552,4 @@ const getChainedFunctions = api.memoize((dummy, state) => {
   return chain
 }, null, 1)
 
-module.exports = api
+module.exports = Object.freeze(api)

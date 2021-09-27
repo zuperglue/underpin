@@ -967,6 +967,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect(_.forEach(()=>1,undefined)).to.be.an('function')
       expect(_.forEach([1,2], 3)).to.be.eql([1,2])
       expect(_.forEach(undefined,undefined)).to.be.eql(undefined)
+      expect( _.forEach(12,(v)=> v) ).to.be.eql(12);
       expect( _.forEach(arrIntLarge,(v)=> v) ).to.be.an('array');
       if (FP) {
         _.forEach((v,i,a) => {

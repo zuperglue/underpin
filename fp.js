@@ -58,8 +58,8 @@ const curryRight = (f, arity) => {
 let dummy = curryRight(null,0)
 dummy = curryRight(null,1)
 
-/* lodash mapping */
-
+/* API mapping */
+api.VERSION = _.VERSION
 /* Array ***************************************/
 api.chunk = curryRight(_.chunk,2)
 api.compact = _.compact
@@ -230,4 +230,4 @@ api.rejectIfNil = curryRight(_.rejectIfNil,2)
 api.isPromise =  _.isPromise
 api.argsToCacheKey =  _.argsToCacheKey
 
-module.exports = api
+module.exports = Object.freeze(api)

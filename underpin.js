@@ -118,7 +118,11 @@ api.uniq = (a) => [...toSet(a)]
 api.xor = (a1,a2) => api.concat(api.difference(a1,a2), api.difference(a2,a1))
 api.zipObject = (a1,a2) => {
   const a2Arr = api.toArray(a2)
-  return api.toArray(a1).reduce((o,k,i) => { o[k] = a2Arr[i]; return o }, {})
+  return api.toArray(a1).reduce((o,k,i) => {
+    if (k === 'constructor' || k === '__proto__') return o;
+    o[k] = a2Arr[i];
+    return o
+  }, {})
 }
 
 /* Collection ********************************/
@@ -268,12 +272,14 @@ api.has = (o, p) => {
   }
 }
 api.keys = (o) => api.isString(o)? api.range(o.length).map(v=> api.toString(v)): api.isObject(o) ? Object.keys(o) : []
-api.keysIn = (o) => api.tap([], (keys) => {for (let key in o) keys.push(key)} )
+api.keysIn = (o) => api.tap([], (keys) => {
+  for (let key in o) keys.push(key)
+})
 api.mapKeys = (o, f) => {
   return api.reduce(api.keys(o), (obj,k)=> {
     const value = o[k]
     const key = api.isFunction(f) ? f(k, value, o) || k : api.isObject(f) ? api.result(f, k, k) || k : k
-    return Object.assign(obj, { [key]: value } )
+    return (key === 'constructor' || key === '__proto__') ? obj : Object.assign(obj, { [key]: value } )
   }, {})
 }
 api.mapValues = (o, f) => {
@@ -304,6 +310,7 @@ api.result = (o, p, def) => {
 api.set = (o , p , v) => {
   if (api.isNil(o)) return o
   api.toPath(p).reduce((obj, prop, index, path) => {
+    if (prop === 'constructor' || prop === '__proto__') return undefined
     if (index === (path.length - 1)) return obj[prop] = v  // end of path, set value
     if (api.has(obj, prop) && (api.isObject(obj[prop]) || api.isArray(obj[prop]))) return obj[prop]  // already has arr or obj on this path, return prop
     return api.isNaN(api.toNumber(path[index + 1])) ? obj[prop]={} : obj[prop]=[] // look ahead to know if to create object or array

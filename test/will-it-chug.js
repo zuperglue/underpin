@@ -1168,7 +1168,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( _.assign({'__proto__': {admin:true}}, {a:1}) ).to.be.an('object').eql({a:1})
         expect( _.assign({a:1},{'__proto__': {admin:true}}) ).to.be.an('object').eql({a:1})
         expect( _.assign({'constructor': {admin:true}}, {a:1}) ).to.be.an('object').eql({a:1})
-        expect( _.assign({a:1},{'constructor': {admin:true}}) ).to.be.an('object').eql({a:1})
+        expect( _.assign({a:1},{a:1, 'constructor': {admin:true}}) ).to.be.an('object').eql({a:1})
       }
     });
     it("get",  function () {

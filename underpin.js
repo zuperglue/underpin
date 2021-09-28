@@ -263,10 +263,16 @@ api.assign = (...objects) => {
   const result = {};
   api.castArray(objects).forEach((o) => {
     if (!api.isObject(o)) return
-    api.keys(o).forEach( (key)=> {
-      if (isUnsafeKey(key)) return
-      Object.assign(result, {[key]: o[key]})
-    })
+    const keys = api.keys(o)
+    if (hasUnsafeKeys(keys)) {
+      // Slow copy to avoid potential "evil"...
+      keys.forEach( (key)=> {
+        if (isUnsafeKey(key)) return
+        Object.assign(result, {[key]: o[key]})
+      })
+    } else {
+      Object.assign(result, o)
+    }
   })
   return result;
 }
@@ -518,6 +524,8 @@ api.argsToCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJS
 //* Internals **************************************/
 
 const isUnsafeKey = (key) => (key === '__proto__' || key === 'constructor')
+const hasUnsafeKeys = (keys) => keys.includes('__proto__') || keys.includes('constructor')
+
 class InvalidDate extends Date {
   toISOString() { return '' }
 }

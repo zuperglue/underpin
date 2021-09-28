@@ -895,6 +895,12 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       if (FP) {
         expect( _.zipObject([1, 2])(['a','b']) ).to.be.an('object').eql({a:1,b:2});
       }
+      // Security: avoid possibilities for prototype pollution
+      if (isChugging) {
+        // Lodash allows this, we will not...
+        expect( _.zipObject(['__proto__'], [{admin:true}]) ).to.be.an('object').eql({})
+        expect( _.zipObject(['constructor'], [{admin:true}]) ).to.be.an('object').eql({})
+      }
     });
   })
 
@@ -1155,6 +1161,15 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.assign(null, undefined) ).to.be.eql({})
       expect( _.assign(null, null) ).to.be.eql({})
       expect( _.assign(undefined, null) ).to.be.eql({})
+      expect ( arrIntLarge.forEach( v => _.assign({a:1,a:2}, {a:3,b:4}))).to.be.an('undefined');
+      // Security: avoid possibilities for prototype pollution
+      if (isChugging){
+        // Lodash "sort" of merge the object, lets not merge at all. We are giving up a lot of performace though...
+        expect( _.assign({'__proto__': {admin:true}}, {a:1}) ).to.be.an('object').eql({a:1})
+        expect( _.assign({a:1},{'__proto__': {admin:true}}) ).to.be.an('object').eql({a:1})
+        expect( _.assign({'constructor': {admin:true}}, {a:1}) ).to.be.an('object').eql({a:1})
+        expect( _.assign({a:1},{'constructor': {admin:true}}) ).to.be.an('object').eql({a:1})
+      }
     });
     it("get",  function () {
       expect( _.get({a:1}, 'a') ).to.be.eql(1, 'returns property of object')
@@ -1244,6 +1259,13 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.mapKeys( Object.create(null) ,(v,k)=> k+v) ).to.be.an('object').eql({})
       expect( _.mapKeys(null,(v,k)=> k+v) ).to.be.an('object').eql({})  // callback order specified as loadash even if wrong
       expect( _.mapKeys(undefined,(v,k)=> k+v) ).to.be.an('object').eql({}) // callback order specified as loadash even if wrong
+      // Security: avoid possibilities for prototype pollution
+      if (isChugging) {
+        expect( _.mapKeys({a:{admin:true} }, {a:'__proto__'}) ).to.be.an('object').eql({a:{admin:true} })
+        expect( _.mapKeys({a:{admin:true} }, {a:'constructor'}) ).to.be.an('object').eql({a:{admin:true} })
+        expect( _.mapKeys({a:{admin:true} }, ()=> '__proto__') ).to.be.an('object').eql({a:{admin:true} })
+        expect( _.mapKeys({a:{admin:true} }, ()=> 'constructor') ).to.be.an('object').eql({a:{admin:true} })
+      }
     });
     it("mapValues",  function () {
       expect( _.mapValues({a:1,b:2},(v,k)=> v*2) ).to.be.an('object').eql({a:2,b:4})
@@ -1258,6 +1280,13 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       }
       expect( _.mapValues(null,(v,k)=> k+v) ).to.be.an('object').eql({})
       expect( _.mapValues(undefined,(v,k)=> k+v) ).to.be.an('object').eql({})
+      // Security: avoid possibilities for prototype pollution
+      if (isChugging) {
+        expect( _.mapValues({'__proto__': 1 }, {'__proto__': {admin:true}}) ).to.be.an('object').eql({})
+        expect( _.mapValues({'constructor': 1 }, {'constructor': {admin:true}}) ).to.be.an('object').eql({})
+        expect( _.mapValues({'__proto__': 1 }, {'__proto__': {admin:true}}) ).to.be.an('object').eql({})
+        expect( _.mapValues({'constructor': 1 }, {'constructor': {admin:true}}) ).to.be.an('object').eql({})
+      }
     });
     it("pick",  function () {
       expect( _.pick({a:1,b:2},['a','b']) ).to.be.an('object').eql({a:1,b:2}, 'returns picked (array) properties of object')
@@ -1273,6 +1302,10 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       if (!FP) {
         expect( _.pick(objLarge, "0") ).to.be.an('object').eql({"0":0}, 'Performance') // Investigate why {"0":"0"} is returned ??
       }
+      // Security: avoid possibilities for prototype pollution
+      expect( _.pick({'__proto__': {admin:true}},'__proto__') ).to.be.an('object').eql({})
+      expect( _.pick({'constructor': {admin:true}},'constructor') ).to.be.an('object').eql({})
+
     });
     it("pickBy",  function () {
       expect( _.pickBy({a:1,b:2},(v,k)=> k == 'a') ).to.be.an('object').eql({a:1})
@@ -1280,6 +1313,12 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.pickBy({a:1,b:2}, undefined) ).to.be.an('object').eql({a:1,b:2})
       expect( _.pickBy( Object.create(null),undefined ) ).to.be.an('object').eql({})
       expect( _.pickBy(undefined, undefined) ).to.be.an('object').eql({})
+      // Security: avoid possibilities for prototype pollution
+      if (isChugging) {
+        // Lodash allows this, we will not...
+        expect( _.pickBy({'__proto__': {admin:true}},()=>true) ).to.be.an('object').eql({})
+        expect( _.pickBy({'constructor': {admin:true}},()=>true) ).to.be.an('object').eql({})
+      }
     });
     it("result",  function () {
       expect( _.result({a:1},'a') ).to.eql(1)
@@ -1315,6 +1354,12 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       //expect( _.set({},null, 1) ).to.be.an('object').eql({})
       expect( _.set({},'a', null) ).to.be.an('object').eql({a:null})
       expect( _.set({},'a', undefined) ).to.be.an('object').eql({a:undefined})
+      // Security: avoid possibilities for prototype pollution
+      expect( _.set({},'__proto__', 'value') ).to.be.an('object').eql({})
+      expect( _.set({},'a.__proto__', 'value') ).to.be.an('object').eql({a:{}})
+      expect( _.set({},'constructor', 'value') ).to.be.an('object').eql({})
+      expect( _.set({},'a.constructor', 'value') ).to.be.an('object').eql({a:{}})
+
     });
     it("toPairs",  function () {
       function Foo() {this.a = 1}

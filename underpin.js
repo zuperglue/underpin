@@ -119,7 +119,7 @@ api.xor = (a1,a2) => api.concat(api.difference(a1,a2), api.difference(a2,a1))
 api.zipObject = (a1,a2) => {
   const a2Arr = api.toArray(a2)
   return api.toArray(a1).reduce((o,k,i) => {
-    if (k === 'constructor' || k === '__proto__') return o;
+    if (isUnsafeKey(k)) return o;
     o[k] = a2Arr[i];
     return o
   }, {})
@@ -258,7 +258,18 @@ api.inRange = (number, start, end) => {
 }
 
 /* Object ************************************/
-api.assign = (o, ...objects) => Object.assign((o || {}),...objects)
+api.assign = (...objects) => {
+  if (api.isNil(objects)) return {};
+  const result = {};
+  api.castArray(objects).forEach((o) => {
+    if (!api.isObject(o)) return
+    api.keys(o).forEach( (key)=> {
+      if (isUnsafeKey(key)) return
+      Object.assign(result, {[key]: o[key]})
+    })
+  })
+  return result;
+}
 api.get = (o, p) => {
   if (api.isNil(p) || api.isNil(o)) return undefined
   return hasDotOrArrayStartOrEnd(p) ? api.toPath(p).reduce((a, v) => a ? a[v] : a , o ) : o[p]
@@ -279,7 +290,7 @@ api.mapKeys = (o, f) => {
   return api.reduce(api.keys(o), (obj,k)=> {
     const value = o[k]
     const key = api.isFunction(f) ? f(k, value, o) || k : api.isObject(f) ? api.result(f, k, k) || k : k
-    return (key === 'constructor' || key === '__proto__') ? obj : Object.assign(obj, { [key]: value } )
+    return isUnsafeKey(key) ? Object.assign(obj, { [k]: value } ) : Object.assign(obj, { [key]: value } )
   }, {})
 }
 api.mapValues = (o, f) => {
@@ -289,7 +300,7 @@ api.mapValues = (o, f) => {
       api.isString(f) ? api.get(v, f) :
       api.isObject(f) ? api.result(f, k, v) :
       v
-    return Object.assign(obj, { [k]: value } )
+    return isUnsafeKey(k) ? obj :  Object.assign(obj, { [k]: value } )
   }, {})
 }
 api.pick = (o, a0, ...args) => {
@@ -300,8 +311,10 @@ api.pick = (o, a0, ...args) => {
   return result;
 }
 api.pickBy = (o, f ) => {
-  const func = api.isFunction(f) ? f : api.identity
-  return api.reduce(api.keys(o), (a,k) => func(o[k],k) ? Object.assign(a,{[k]:api.get(o,k)}) : a, {})
+  const predicate = api.isFunction(f) ? f : api.identity
+  return api.reduce(api.keys(o), (a,k) => {
+    return predicate(o[k],k) ? api.set(a, k, api.get(o,k)) : a
+  }, {})
 }
 api.result = (o, p, def) => {
   const v = api.get(o,p);
@@ -310,7 +323,7 @@ api.result = (o, p, def) => {
 api.set = (o , p , v) => {
   if (api.isNil(o)) return o
   api.toPath(p).reduce((obj, prop, index, path) => {
-    if (prop === 'constructor' || prop === '__proto__') return undefined
+    if (isUnsafeKey(prop)) return undefined
     if (index === (path.length - 1)) return obj[prop] = v  // end of path, set value
     if (api.has(obj, prop) && (api.isObject(obj[prop]) || api.isArray(obj[prop]))) return obj[prop]  // already has arr or obj on this path, return prop
     return api.isNaN(api.toNumber(path[index + 1])) ? obj[prop]={} : obj[prop]=[] // look ahead to know if to create object or array
@@ -499,13 +512,12 @@ api.falsyTo = (v,to)  => (!v) ? to : v
 api.undefinedTo = (v,to)  => api.isUndefined(v) ? to : v
 api.nilTo = (v,to)  => api.isNil(v) ? to : v
 api.toJSON = (j,intend = 0) => JSON.stringify(j, null,intend )
-//api.resolve = (v) => Promise.resolve(v)
-//const reject = (e) => Promise.reject(e)
 api.rejectIfNil = (v,msg) => api.isNil(v) ? Promise.reject(msg) : v
 api.argsToCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v),'"'),'')
 
 //* Internals **************************************/
 
+const isUnsafeKey = (key) => (key === '__proto__' || key === 'constructor')
 class InvalidDate extends Date {
   toISOString() { return '' }
 }

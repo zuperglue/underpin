@@ -221,6 +221,7 @@ api.today = _.today
 api.tomorrow = _.tomorrow
 api.toEpoch = _.toEpoch
 api.toJSON = _.toJSON
+api.parseJSON = _.parseJSON
 api.toDate = _.toDate
 api.isToday = _.isToday
 api.hours = _.hours

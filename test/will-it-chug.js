@@ -2073,6 +2073,18 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( _.toJSON(undefined) ).to.be.eql(undefined);
         expect( _.toJSON(()=>1) ).to.be.eql(undefined);
       });
+      it("parseJSON", function () {
+        expect( _.parseJSON(null) ).to.be.eql(null);
+        expect( _.parseJSON(undefined) ).to.be.eql(undefined);
+        expect( _.parseJSON('null') ).to.be.eql(null);
+        expect( _.parseJSON('1') ).to.be.eql(1);
+        expect( _.parseJSON('"A"') ).to.be.eql('A');
+        expect( _.parseJSON('[1,2,3]') ).to.be.eql([1,2,3]);
+        expect( _.parseJSON('{"a":1}') ).to.be.eql({a:1});
+        expect( ()=> _.parseJSON('{"a":()=>1}') ).to.throw('Unexpected token');
+        expect( ()=> _.parseJSON('{"__proto__":1}') ).to.throw('Unsafe JSON');
+        expect( ()=> _.parseJSON('{"constructor":1}') ).to.throw('Unsafe JSON');
+      });
       it("rejectIfNil", function () {
         expect( _.rejectIfNil(1, 'Fail') ).to.be.eql(1);
         expect( _.isPromise(_.rejectIfNil(null,'fail')) ).to.be.eql(true);
@@ -2088,7 +2100,6 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         let end = start + 24 * 3600 * 1000 // + 24 h
         expect(_.tomorrow()).to.be.within(start, end)
       });
-
     })
 
     describe('Internals', function () {

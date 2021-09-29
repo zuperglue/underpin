@@ -1158,16 +1158,23 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
     it("assign",  function () {
       expect( _.assign({a:1},{b:2}) ).to.be.eql({a:1,b:2})
       expect( _.assign({a:1},{a:2},{a:3}) ).to.be.eql({a:3})
+      expect( _.assign({a:1},()=>1) ).to.be.eql({a:1})
+      const f = () => 1
+      f.a = 2
+      expect( _.assign({a:1},f) ).to.be.eql({a:2})
+      const o = {a:1}
+      expect( _.assign(o, {a:2}) ).to.be.eql({a:2})
+      expect(o).to.be.eql({a:2})
+      expect( _.assign(null, {a:1}) ).to.be.eql({a:1})
       expect( _.assign(null, undefined) ).to.be.eql({})
       expect( _.assign(null, null) ).to.be.eql({})
       expect( _.assign(undefined, null) ).to.be.eql({})
       expect ( arrIntLarge.forEach( v => _.assign({a:1,a:2}, {a:3,b:4}))).to.be.an('undefined');
-      // Security: avoid possibilities for prototype pollution
       if (isChugging){
-        // Lodash "sort" of merge the object, lets not merge at all. We are giving up a lot of performace though...
-        expect( _.assign({'__proto__': {admin:true}}, {a:1}) ).to.be.an('object').eql({a:1})
+        expect( _.assign({a:1}, 'x', {a:2}) ).to.be.eql({a:2})  // Lodash merges x with key 0, dont think tats right
+
+        // Security: avoid possibilities for prototype pollution. Lodash dose something but not sure if right
         expect( _.assign({a:1},{'__proto__': {admin:true}}) ).to.be.an('object').eql({a:1})
-        expect( _.assign({'constructor': {admin:true}}, {a:1}) ).to.be.an('object').eql({a:1})
         expect( _.assign({a:1},{a:1, 'constructor': {admin:true}}) ).to.be.an('object').eql({a:1})
       }
     });
@@ -1359,7 +1366,12 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.set({},'a.__proto__', 'value') ).to.be.an('object').eql({a:{}})
       expect( _.set({},'constructor', 'value') ).to.be.an('object').eql({})
       expect( _.set({},'a.constructor', 'value') ).to.be.an('object').eql({a:{}})
-
+      var o = {}
+      expect(_.set(o, '__proto__.toString', 666) ).to.be.an('object').eql({})
+      expect( _.isFunction(o.__proto__.toString)).to.be.eql(true)
+      o = {a:1}
+      expect(_.set(o, '__proto__.toString', 666) ).to.be.an('object').eql({a:1})
+      expect( _.isFunction(o.__proto__.toString)).to.be.eql(true)
     });
     it("toPairs",  function () {
       function Foo() {this.a = 1}

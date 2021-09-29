@@ -258,9 +258,9 @@ api.inRange = (number, start, end) => {
 }
 
 /* Object ************************************/
-api.assign = (...objects) => {
-  if (api.isNil(objects)) return {};
-  const result = {};
+api.assign = (dest, ...objects) => {
+  //if (api.isNil(src)) return {};
+  const result = api.isObject(dest) ? dest : {};
   api.castArray(objects).forEach((o) => {
     if (!api.isObject(o)) return
     const keys = api.keys(o)
@@ -329,7 +329,7 @@ api.result = (o, p, def) => {
 api.set = (o , p , v) => {
   if (api.isNil(o)) return o
   api.toPath(p).reduce((obj, prop, index, path) => {
-    if (isUnsafeKey(prop)) return undefined
+    if (isUnsafeKey(prop) || api.isNil(obj)) return undefined
     if (index === (path.length - 1)) return obj[prop] = v  // end of path, set value
     if (api.has(obj, prop) && (api.isObject(obj[prop]) || api.isArray(obj[prop]))) return obj[prop]  // already has arr or obj on this path, return prop
     return api.isNaN(api.toNumber(path[index + 1])) ? obj[prop]={} : obj[prop]=[] // look ahead to know if to create object or array

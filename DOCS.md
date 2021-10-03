@@ -1,3 +1,32 @@
+
+## Examples
+
+A key feature of the API (as in lodash, for most cases) is that whatever you provide as arguments,
+the API dosn't throw back an Exception! It will have consistant behavior, but it will not throw.
+For me it's a core feature, for others it can be a dealbreaker.
+
+When your use-case must treat "undefined" or an unexpected data types specifically, add pre or post conditions.
+Test your "negative flows", and make sure important errors dosn't get hidden just because the API is ok with the "undefined".
+
+
+
+```javascript
+// With plain JS: guards, bolierplate and a lot of code branches to test...
+const oldiesJS = (people) => Array.isArray(people) ? 
+  people.filter( (person) => person && person.age > 50 && person.gender=='male') : []
+
+// Becomes concise, with "shortcuts" that can mix predicates and values...
+const oldies = _.filter({age: _.gt(50), gender: 'male'})
+
+// Curate rest API response
+const curate = _.map(_.flow(
+  _.mapKeys({Name, 'name', Age, 'age', Groups: 'groups'}),  // map key names with shortcuts
+  _.pick(['name', 'age', 'groups']),  // Pick expected keys
+  _.mapValues({age: _.nilTo(null), groups: _.nilTo([]) }) // map values with shortcuts
+))
+```
+
+
 ## Size & dependecies
 [https://bundlephobia.com/package/underpin](https://bundlephobia.com/package/underpin)
 

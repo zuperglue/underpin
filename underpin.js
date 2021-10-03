@@ -324,7 +324,8 @@ api.pickBy = (o, f ) => {
 }
 api.result = (o, p, def) => {
   const v = api.get(o,p);
-  return api.isFunction(v) ? v(def) : (v !== undefined) ? v: api.isFunction(def) ? def(v) : def;
+  const defaultValue = api.isFunction(def) ? def(v) : def
+  return api.isFunction(v) ? v(def) : (v !== undefined) ? v : defaultValue;
 }
 api.set = (o , p , v) => {
   if (api.isNil(o)) return o
@@ -423,7 +424,7 @@ api.conforms = api.matches
 api.matchesProperty = (p,src) => (o) => {
   if (!api.has(o,p)) return false
   if (api.isFunction(src)) return !!(src(api.get(o,p)))
-  if (api.isRegExp(src)) return src.test(api.get(o,p))
+  if (api.isRegExp(src)) return false
   return api.isEqual(src, api.get(o,p))
 }
 api.property = (s) => (o) => api.get(o,s)

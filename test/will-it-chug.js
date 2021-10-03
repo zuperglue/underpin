@@ -11,28 +11,6 @@ const isChugging = (
 const FP = (
   testPackageName === '../fp.js'
 )
-
-const instrument = () => {
-  const m1 = process.memoryUsage();
-  let max = {rss:0, heapTotal:0, heapUsed:0, external:0, arrayBuffers:0};
-  return () => {
-    const m2 = process.memoryUsage();
-    if (m2.rss > max.rss) max.rss = m2.rss;
-    if (m2.heapTotal > max.heapTotal) max.heapTotal = m2.heapTotal;
-    if (m2.heapUsed > max.heapUsed) max.heapUsed = m2.heapUsed;
-    if (m2.external > max.external) max.external = m2.external;
-    if (m2.arrayBuffers > max.arrayBuffers) max.arrayBuffers = m2.arrayBuffers;
-    console.log('CURRENT:')
-    for (let key in m2) {
-      console.log(`${key}: + ${Math.round((m2[key]-m1[key]) / 1024 / 1024 * 100) / 100} MB`);
-    }
-    console.log('MAX:')
-    for (let key in max) {
-      console.log(`${key}: + ${Math.round((max[key]-m1[key]) / 1024 / 1024 * 100) / 100} MB`);
-    }
-  }
-}
-const memory = instrument()
 const t0 = Date.now()
 const _ = require(testPackageName) // after we intrument memory
 console.log('Loaded in (ms):', (Date.now()-t0))
@@ -40,7 +18,6 @@ console.log('Loaded in (ms):', (Date.now()-t0))
 const UNDEF_ARR = []
 const UNDEF_INT = 0
 const UNDEF_1 = 1
-
 
 const arrStr = ['a', 'b', 'c']
 const arrInt = _.range(1, arrStr.length + 1) // 1,2,3..
@@ -57,6 +34,7 @@ const arrFalsy = [false, null, 0, '', undefined, NaN]
 const largeArrSize = 200_000;
 const arrIntLarge = _.range(0,largeArrSize)
 const arrStrLarge = arrIntLarge.map(v => v.toString())
+const strLarge = _.join(arrStrLarge,'');
 const objLarge = (FP) ? _.zipObject(arrIntLarge, arrStrLarge) : _.zipObject(arrStrLarge, arrIntLarge)
 class clazz{}
 
@@ -467,6 +445,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.isString(boolTrue) ).to.be.an('boolean').eq(false)
       expect( _.isString(obj) ).to.be.an('boolean').eq(false);
       expect( _.isString(arrInt) ).to.be.an('boolean').eq(false);
+      expect( _.isString(strLarge) ).to.be.an('boolean').eq(true);
       expect ( arrIntLarge.forEach( v => _.isString(v))).to.be.an('undefined');
     });
     it("isSymbol", function () {
@@ -516,6 +495,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.toNumber(undefined) ).to.be.an('number').eql(NaN);
       expect( _.toNumber(NaN) ).to.be.an('number').eql(NaN);
       expect( _.toNumber(Infinity) ).to.be.an('number').eql(Infinity); // Should be Number.MAX_VALUE
+      expect( _.toNumber(strLarge) ).to.be.eq(Infinity);
       expect ( arrIntLarge.forEach( v => _.toNumber(v))).to.be.an('undefined');
     });
     it("toInteger", function () {
@@ -535,6 +515,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.toInteger(NaN) ).to.be.an('number').eql(0);
       expect( _.toInteger(Infinity) ).to.be.an('number').eql(Number.MAX_VALUE); // Should be Number.MAX_SAFE_INTEGER
       if (isChugging) {
+        expect( _.toInteger(strLarge) ).to.be.eq(Infinity); // Should this be Number.MAX_SAFE_INTEGER
         expect( _.toInteger(-Infinity) ).to.be.an('number').eql(Number.MIN_SAFE_INTEGER); // Should be Number.MIN_SAFE_INTEGER
       }
       expect ( arrIntLarge.forEach( v => _.toInteger(v))).to.be.an('undefined');
@@ -989,6 +970,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.groupBy(null, (o) => o.a) ).to.be.an('object').eql({})
       expect( _.groupBy([{a:'alfa'}], undefined) ).to.be.an('object').eql({"[object Object]":[{a:'alfa'}]})
       expect( _.groupBy([{a:'alfa'}], {}) ).to.be.an('object').eql({"true":[{a:'alfa'}]})
+      expect( _.groupBy(['alfa','beta'], 0) ).to.be.an('object').eql({a:['alfa'],b:['beta']})
+      expect( _.groupBy(['alfa','beta'], 'a') ).to.be.an('object').eql({undefined:['alfa','beta']})
+
       if (FP) {
         expect( _.groupBy('a')([{a:'alfa'},{a:'beta'}]) ).to.be.an('object').eql({alfa:[{a:'alfa'}],beta:[{a:'beta'}]})
       }
@@ -1157,12 +1141,14 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
   describe('Object',  function () {
     it("assign",  function () {
       expect( _.assign({a:1},{b:2}) ).to.be.eql({a:1,b:2})
+      let o = {a:1}
+      expect( _.assign(o,{b:2}) ).to.be.eq(o) // Verify that dest is same as result
       expect( _.assign({a:1},{a:2},{a:3}) ).to.be.eql({a:3})
       expect( _.assign({a:1},()=>1) ).to.be.eql({a:1})
       const f = () => 1
       f.a = 2
       expect( _.assign({a:1},f) ).to.be.eql({a:2})
-      const o = {a:1}
+      o = {a:1}
       expect( _.assign(o, {a:2}) ).to.be.eql({a:2})
       expect(o).to.be.eql({a:2})
       expect( _.assign(null, {a:1}) ).to.be.eql({a:1})
@@ -1794,10 +1780,9 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.matches([2,3])([1,2,3]) ).to.be.eql(false);
       if (isChugging) {
         expect( _.matches({a:(v)=> v == 1})({a:1,b:2}) ).to.be.eql(true);
-        expect( _.matches({a: /^[1-9]+$/ })({a:1,b:2}) ).to.be.eql(true);
+        expect( _.matches({a: /^[1-9]+$/ })({a:1,b:2}) ).to.be.eql(false); // We dont support RegExp
         expect( _.matches({a:_.isNumber, b:_.isNumber})({a:1,b:2,c:3}) ).to.be.eql(true);
         expect( _.matches({a:(v)=> v == 2})({a:1,b:2}) ).to.be.eql(false);
-        expect( _.matches({a: /^[A-Z]+$/ })({a:1,b:2}) ).to.be.eql(false);
         expect( _.matches({a:_.isString, b:_.isNumber})({a:1,b:2,c:3}) ).to.be.eql(false);
       }
     });
@@ -1819,6 +1804,8 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       expect( _.matchesProperty(0,1)([1,2]) ).to.be.eql(true);
       expect( _.matchesProperty(3,1)([1,2]) ).to.be.eql(false);
       expect( _.matchesProperty(25)({a:1}) ).to.be.eql(false);
+      //We do not suuport regExp but classic ReDos attack would then be tested
+      expect( _.matchesProperty('a', /A(B|C+)+D/)({a:'ACCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCX'}) ).to.be.eql(false);
       if (isChugging) {
         expect( _.matchesProperty('a',(v)=> v === 1)({a:1}) ).to.be.eql(true);
         expect( _.matchesProperty('a',(v)=> v === 2)({a:1}) ).to.be.eql(false);

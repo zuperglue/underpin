@@ -201,26 +201,46 @@ api.tomorrow = () => api.today() + 24 * 3600 * 1000
 
 /* Function **********************************/
 api.negate = (predicate) => (...args) => !( api.isFunction(predicate) ? predicate(...args): api.identity(...args) )
-api.memoize = (f, resolver, maxCacheSize = Math.pow(2, 24)) => {
+api.memoize = (f, keyResolver) => {
+  const config = api.isFunction(keyResolver) ? {resolver:keyResolver} : api.isObject(keyResolver) ? keyResolver : {}
+  const {resolver = api.identity, capacity = Math.pow(2, 24), lru = false } = config
   const cache = new Map()
-  const cacheKey = api.isFunction(resolver) ? resolver : api.identity
-  return (...args) => {
-    const key = cacheKey(...args)
+  const memoized = (...args) => {
+    const key = resolver(...args)
     let value = cache.get(key);
     if (value === undefined && !cache.has(key)) {
-      if (cache.size >= maxCacheSize) cache.clear()
+      // not in cache, call f to get value
       value = f(...args)
+      // manage cache size
+      if (cache.size >= capacity) {
+        lru ? cache.delete(cache.keys().next().value) : cache.clear()
+      }
       if (api.isPromise(value)) {
+        // promise value, return a proxy promise
         return new Promise((resolve, reject) => {
           Promise.resolve(value)
-            .then(v=> {cache.set(key, Promise.resolve(v)); resolve(v)})
+            .then(v=> {
+              cache.set(key, Promise.resolve(v))
+              resolve(v)
+            })
             .catch(reject)
         })
+      } else {
+        // Non promise value
+        cache.set(key, value)
+        return value
       }
-      cache.set(key, value);
+    } else {
+      // Found in cache. If in lru mode, make "youngest"
+      if (lru) {
+        cache.delete(key)
+        cache.set(key, value)
+      }
+      return value
     }
-    return value;
   }
+  memoized.cache = cache
+  return memoized
 }
 
 /* Math **************************************/

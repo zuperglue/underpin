@@ -1,6 +1,6 @@
 {
   "name": "underpin",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Lodash subset and additions for node.js",
   "author": "zuperglue",
   "license": "MIT",

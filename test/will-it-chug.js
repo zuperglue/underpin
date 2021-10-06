@@ -1091,21 +1091,60 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
 
   describe('Function',  function () {
     it("memoize",  function () {
+      let called = 0
       let f = (arg) => { called++; return arg}
       let cashed = _.memoize(f)
-      let called = 0, res1 = cashed(), res2 = cashed();
+      called = 0, res1 = cashed(), res2 = cashed();
+      if (isChugging ) {
+        expect( Object.fromEntries(cashed.cache) ).to.be.eql({'undefined':undefined})
+      }
       expect( called ).to.be.eql(1)
       // call with other key
       expect( _.eq(res1,res2) ).to.be.eql(true)
       called = 0; res1 = cashed('a'); res2 = cashed('a');
       expect( called ).to.be.eql(1)
+      if (isChugging ) {
+        expect(Object.fromEntries(cashed.cache)).to.be.eql({'undefined': undefined, a: 'a'})
+      }
       expect( _.eq(res1,res2) ).to.be.eql(true)
+      // Clear cache
+      if (isChugging ) {
+        cashed.cache.clear()
+        expect(Object.fromEntries(cashed.cache)).to.be.eql({})
+      }
       // call with key resolver
       cashed = _.memoize(f, (k)=>1) // all resolved to cache key 1
       called = 0; res1 = cashed('a'); res2 = cashed('b');
       expect( called ).to.be.eql(1)
       expect( _.eq(res1,res2) ).to.be.eql(true)
+      if (isChugging ) {
+        expect(Object.fromEntries(cashed.cache)).to.be.eql({'1': 'a'})
+      }
       expect( res2 ).to.be.eql('a')
+
+      if (isChugging ) {
+        // Test capacity
+        smallCache = _.memoize(f, {capacity: 1})
+        called = 0; res1 = smallCache('a'); res2 = smallCache('b');
+        expect(called).to.be.eql(2)
+        expect(Object.fromEntries(smallCache.cache)).to.be.eql({b: 'b'}) // last call
+        // Test lru
+        lruCache = _.memoize(f, {capacity: 2, lru : true})
+        called = 0; res1 = lruCache('x'); res2 = lruCache('y');
+        expect(called).to.be.eql(2)
+        expect(lruCache.cache.keys().next().value ).to.be.eql('x', 'inital state - x oldest')
+        lruCache('x') // should make 'x' younger (move to end of map)
+        expect(lruCache.cache.keys().next().value ).to.be.eql('y' , 'reordered - y oldest')
+        lruCache('y') // should make 'y' younger (move to end of map)
+        expect(lruCache.cache.keys().next().value ).to.be.eql('x', 'reordered - x oldest')
+        lruCache('z') // should delete oldest (x)
+        expect(lruCache.cache.keys().next().value ).to.be.eql('y', 'reordered - y oldest')
+        expect(Object.fromEntries(lruCache.cache)).to.be.eql({y: 'y', z: 'z'})
+        lruCache('å') // should delete oldest (x)
+        expect(lruCache.cache.keys().next().value ).to.be.eql('z', 'reordered - z oldest')
+        expect(Object.fromEntries(lruCache.cache)).to.be.eql({'å': 'å', z: 'z'})
+      }
+
     });
     it("memoize-resolve",  function () {
       // cache resolved Promise result

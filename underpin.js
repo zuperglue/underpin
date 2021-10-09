@@ -202,24 +202,26 @@ api.tomorrow = () => api.today() + 24 * 3600 * 1000
 /* Function **********************************/
 api.negate = (predicate) => (...args) => !( api.isFunction(predicate) ? predicate(...args): api.identity(...args) )
 api.memoize = (f, keyResolver) => {
-  const config = api.isFunction(keyResolver) ? {resolver:keyResolver} : api.isObject(keyResolver) ? keyResolver : {}
+  const config = api.isFunction(keyResolver) ? {resolver: keyResolver} : api.isObject(keyResolver) ? keyResolver : {}
   const {resolver = api.identity, capacity = Math.pow(2, 24), lru = false } = config
+  const max = (api.toInteger(capacity) > 0 ) ? api.toInteger(capacity) : Math.pow(2, 24) // Cache of 0 size, is not a cache
+  const getKey = api.isFunction(resolver) ? resolver : api.identity
   const cache = new Map()
   const memoized = (...args) => {
-    const key = resolver(...args)
+    const key = getKey(...args)
     let value = cache.get(key);
     if (value === undefined && !cache.has(key)) {
       // not in cache, call f to get value
       value = f(...args)
       // manage cache size
-      if (cache.size >= capacity) {
+      if (cache.size >= max) {
         lru ? cache.delete(cache.keys().next().value) : cache.clear()
       }
       if (api.isPromise(value)) {
         // promise value, return a proxy promise
         return new Promise((resolve, reject) => {
           Promise.resolve(value)
-            .then(v=> {
+            .then((v) => {
               cache.set(key, Promise.resolve(v))
               resolve(v)
             })
@@ -467,7 +469,7 @@ api.toPath = api.memoize( (s) => {
   return hasArrayStartOrEnd(s) ? api.compact(api.split(api.replace(api.replace(s, /\[/g , '.') , /]/g , ''),'.' )) :
     api.isString(s) ? s.split('.') :
     api.split(s,'.')
-}, undefined, 50)  // will clear map when size >= X, to prevent memory build up. Its only a cache !!!
+}, {capacity : 50})  // will clear map when size >= capacity, to prevent memory build up. Its only a cache !!!
 api.over = (...funcs) => {
   return (...args) => api.toArray( api.isArray(funcs[0]) ? funcs[0] : [...funcs] ).map((f) => api.iteratee(f)(...args))
 }
@@ -608,6 +610,6 @@ const getChainedFunctions = api.memoize((dummy, state) => {
     return chain
   })
   return chain
-}, null, 1)
+}, {capacity : 1})
 
 module.exports = Object.freeze(api)

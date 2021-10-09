@@ -1143,6 +1143,10 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         lruCache('å') // should delete oldest (x)
         expect(lruCache.cache.keys().next().value ).to.be.eql('z', 'reordered - z oldest')
         expect(Object.fromEntries(lruCache.cache)).to.be.eql({'å': 'å', z: 'z'})
+        // test bad values
+        safeCache = _.memoize(f, {capacity: 'x', resolver : true})
+        safeCache('a') // should delete oldest (x)
+        expect(Object.fromEntries(safeCache.cache)).to.be.eql({a: 'a'})
       }
 
     });

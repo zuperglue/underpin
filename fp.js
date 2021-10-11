@@ -10,13 +10,25 @@ const api = (v) => {
   fc(arg1)(arg0)            => f(arg0, arg1)
   fc(arg0, arg1, ...args)   => f(arg0, arg1, ...args)
  */
-const curry2 = (func) => {
+const curry2Right = (func) => {
   return (...args) => {
     const [arg1] = args;
     switch (args.length) {
       case 0:
       case 1:
         return (arg0) => func.apply(undefined, [arg0, args[0]])
+      default:
+        return func.apply(undefined, args)
+    }
+  }
+}
+
+const curry2Left = (func) => {
+  return (...args) => {
+    switch (args.length) {
+      case 0:
+      case 1:
+        return (arg1) => func.apply(undefined, [args[0], arg1])
       default:
         return func.apply(undefined, args)
     }
@@ -30,7 +42,7 @@ const curry2 = (func) => {
   fc(arg1, arg2)(arg0)            => f(arg0, arg1, arg2)
   fc(arg0, arg1, arg2, ...args)   => f(arg0, arg1, arg2, ...args)
  */
-const curry3 = (func) => {
+const curry3Right = (func) => {
   return (...args) => {
     switch (args.length) {
       case 0:
@@ -50,13 +62,26 @@ const curryRight = (f, arity) => {
     case 1:
       return f
     case 2:
-      return curry2(f)
+      return curry2Right(f)
     default:
-      return curry3(f)
+      return curry3Right(f)
   }
 }
+
+const curryLeft = (f, arity) => {
+  switch (arity) {
+    case 0:
+    case 1:
+      return f
+    default:
+      return curry2Left(f)
+  }
+}
+
 let dummy = curryRight(null,0)
 dummy = curryRight(null,1)
+dummy = curryLeft(null,0)
+dummy = curryLeft(null,1)
 
 /* API mapping */
 api.VERSION = _.VERSION
@@ -156,7 +181,7 @@ api.sumBy = curryRight(_.sumBy,2)
 api.inRange = curryRight(_.inRange,3)
 
 /* Object **************************************/
-api.assign = curryRight(_.assign,2)               // Partial only support 1 arg
+api.assign = curryLeft(_.assign,2)               // CURRY LEFT!!!! Partial only support 1 arg
 api.get = curryRight(_.get,2)                      // No default
 api.has = curryRight(_.has,2)
 api.keys = _.keys

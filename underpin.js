@@ -540,7 +540,7 @@ api.curate = (o, p, ...funcs) => api.flow(...funcs)(api.get(o,p))
 api.falsyTo = (v,to)  => (!v) ? to : v
 api.undefinedTo = (v,to)  => api.isUndefined(v) ? to : v
 api.nilTo = (v,to)  => api.isNil(v) ? to : v
-api.toJSON = (j,intend = 0) => JSON.stringify(j, null,intend )
+api.toJSON = (j,intend = 2) => JSON.stringify(j, null,intend )
 api.parseJSON = (j) => {
   if (api.isUndefined(j)) return undefined
   const data = JSON.parse(j)  // will throw if invalid JSON
@@ -552,7 +552,7 @@ api.parseJSON = (j) => {
   return data;
 }
 api.rejectIfNil = (v,msg) => api.isNil(v) ? Promise.reject(msg) : v
-api.argsToCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v),'"'),'')
+api.argsToCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v,0),'"'),'')
 
 //* Internals **************************************/
 

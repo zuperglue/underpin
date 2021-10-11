@@ -1206,6 +1206,11 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( _.assign({a:1},{'__proto__': {admin:true}}) ).to.be.an('object').eql({a:1})
         expect( _.assign({a:1},{a:1, 'constructor': {admin:true}}) ).to.be.an('object').eql({a:1})
       }
+      if (FP) {
+        // Currid Left !!!
+        o = {a:1}
+        expect( _.assign(o)({a:2}) ).to.be.an('object').eql({a:2})
+      }
     });
     it("get",  function () {
       expect( _.get({a:1}, 'a') ).to.be.eql(1, 'returns property of object')
@@ -2110,7 +2115,7 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
       it("toJSON", function () {
         expect( _.toJSON(1) ).to.be.eql('1');
         expect( _.toJSON('a') ).to.be.eql('"a"');
-        expect( _.toJSON({a:1}) ).to.be.eql('{"a":1}');
+        expect( _.toJSON({a:1}, 0) ).to.be.eql('{"a":1}');
         expect( _.toJSON(null) ).to.be.eql('null');
         expect( _.toJSON(undefined) ).to.be.eql(undefined);
         expect( _.toJSON(()=>1) ).to.be.eql(undefined);

@@ -2133,9 +2133,21 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( ()=> _.parseJSON('{"constructor":1}') ).to.throw('Unsafe JSON');
       });
       it("rejectIfNil", function () {
+        expect( _.rejectIfNil(0, 'Fail') ).to.be.eql(0);
         expect( _.rejectIfNil(1, 'Fail') ).to.be.eql(1);
+        expect( _.rejectIfNil(false, 'Fail') ).to.be.eql(false);
+        expect( _.rejectIfNil('', 'Fail') ).to.be.eql('');
         expect( _.isPromise(_.rejectIfNil(null,'fail')) ).to.be.eql(true);
         expect( _.isPromise(_.rejectIfNil(undefined,'fail')) ).to.be.eql(true);
+      });
+      it("rejectIfFalsy", function () {
+        expect( _.rejectIfFalsy(1, 'Fail') ).to.be.eql(1);
+        expect( _.isPromise(_.rejectIfFalsy(null,'fail')) ).to.be.eql(true);
+        expect( _.isPromise(_.rejectIfFalsy(undefined,'fail')) ).to.be.eql(true);
+        expect( _.isPromise(_.rejectIfFalsy(0,'fail')) ).to.be.eql(true);
+        expect( _.isPromise(_.rejectIfFalsy(NaN,'fail')) ).to.be.eql(true);
+        expect( _.isPromise(_.rejectIfFalsy('','fail')) ).to.be.eql(true);
+        expect( _.isPromise(_.rejectIfFalsy(false,'fail')) ).to.be.eql(true);
       });
       it("today", function () {
         let start = (new Date().valueOf() - (24 * 3600 * 1000)) // 24 hours back

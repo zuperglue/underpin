@@ -253,6 +253,7 @@ api.hours = _.hours
 api.minutes = _.minutes
 //api.resolve = _.resolve
 api.rejectIfNil = curryRight(_.rejectIfNil,2)
+api.rejectIfFalsy = curryRight(_.rejectIfFalsy,2)
 api.isPromise =  _.isPromise
 api.argsToCacheKey =  _.argsToCacheKey
 

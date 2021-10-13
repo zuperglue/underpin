@@ -552,6 +552,7 @@ api.parseJSON = (j) => {
   return data;
 }
 api.rejectIfNil = (v,msg) => api.isNil(v) ? Promise.reject(msg) : v
+api.rejectIfFalsy = (v,msg) => (!v) ? Promise.reject(msg) : v
 api.argsToCacheKey = (...args) => args.reduce((key, v) => key +api.trim(api.toJSON(v,0),'"'),'')
 
 //* Internals **************************************/

@@ -117,7 +117,7 @@ api.includes = curryRight(_.includes,2)             // partials start at 0
 api.map = curryRight(_.map,2)
 api.orderBy = curryRight(_.orderBy,2)
 api.reduce = curryRight(_.reduce,3)
-api.reject = curryRight(_.reject,2)                 // Iteratee replace candidate
+api.discard = curryRight(_.discard,2)                 // Iteratee replace candidate
 api.size = _.size
 api.sortBy = curryRight(_.sortBy,2)
 
@@ -252,6 +252,7 @@ api.isToday = _.isToday
 api.hours = _.hours
 api.minutes = _.minutes
 //api.resolve = _.resolve
+api.reject = curryRight(_.reject,2)
 api.rejectIfNil = curryRight(_.rejectIfNil,2)
 api.rejectIfFalsy = curryRight(_.rejectIfFalsy,2)
 api.isPromise =  _.isPromise

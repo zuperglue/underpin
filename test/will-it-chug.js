@@ -1041,12 +1041,13 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( _.reduce(0)((a, v) => a + v)([1,2,3]) ).to.be.an('number').eql(6);
       }
     });
-    it("reject", function () {
-      expect( _.reject([becky,john],{age:52}) ).to.be.an('array').eql([john]);
-      expect( _.reject([becky,john],'age') ).to.be.an('array').eql([]); // has age
-      expect( _.reject([becky,john],'agex') ).to.be.an('array').eql([becky,john]);
+    it("discard (lodash _.reject)", function () {
+      const funcName = isChugging ? 'discard' : 'reject'
+      expect( _[funcName]([becky,john],{age:52}) ).to.be.an('array').eql([john]);
+      expect( _[funcName]([becky,john],'age') ).to.be.an('array').eql([]); // has age
+      expect( _[funcName]([becky,john],'agex') ).to.be.an('array').eql([becky,john]);
       if (FP) {
-        expect( _.reject({age:52})([becky,john]) ).to.be.an('array').eql([john]);
+        expect( _[funcName]({age:52})([becky,john]) ).to.be.an('array').eql([john]);
       }
     });
     it("size", function () {
@@ -2132,6 +2133,11 @@ describe( ('Will it chug? (' + testPackageName + ' ' +  _.VERSION + ')' ),  func
         expect( ()=> _.parseJSON('{"__proto__":1}') ).to.throw('Unsafe JSON');
         expect( ()=> _.parseJSON('{"constructor":1}') ).to.throw('Unsafe JSON');
       });
+      it("reject", function () {
+        expect( _.isPromise(_.reject(null,null)) ).to.be.eql(true);
+        expect( _.isPromise(_.reject(new Error('Original'),null)) ).to.be.eql(true);
+        expect( _.isPromise(_.reject(new Error('Original'),new Error('Wrapper'))) ).to.be.eql(true);
+      })
       it("rejectIfNil", function () {
         expect( _.rejectIfNil(0, 'Fail') ).to.be.eql(0);
         expect( _.rejectIfNil(1, 'Fail') ).to.be.eql(1);

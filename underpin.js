@@ -158,7 +158,7 @@ api.reduce = (a, f, init) => {
   if (api.isObject(a)) return api.keys(a).reduce((acc,key)=> api.iteratee(f)(acc,a[key],key,a), init)
   return init
 }
-api.reject = (a,f) => api.toArray(a).filter(api.negate(api.iteratee(f)))
+api.discard = (a,f) => api.toArray(a).filter(api.negate(api.iteratee(f)))  // renamed to avoid promise confusion
 api.size = (a) => {
   if (api.isArrayLike(a)) return a.length
   if (api.isSet(a) || api.isMap(a)) return a.size
@@ -550,6 +550,14 @@ api.parseJSON = (j) => {
     if (hasUnsafeKeys(keys)) throw new Error('Unsafe JSON object')
   }
   return data;
+}
+api.reject = (e, wrapper) => {
+  if (api.isNil(wrapper)) return Promise.reject(e)
+  if (api.isError(wrapper)) {
+    wrapper.cause = e; // Make sure original is availible. We should shallow copy other properties.
+    return Promise.reject(wrapper)
+  }
+  return Promise.reject(wrapper)
 }
 api.rejectIfNil = (v,msg) => api.isNil(v) ? Promise.reject(msg) : v
 api.rejectIfFalsy = (v,msg) => (!v) ? Promise.reject(msg) : v

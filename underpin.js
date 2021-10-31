@@ -9,6 +9,7 @@ const api = (v) => {
   } // TODO: fix state so we can freeze chain...
   return chain
 }
+/** @string VERSION*/
 api.VERSION = require('./package.json').version;
 
 /* Lang ************************************** */
@@ -24,6 +25,11 @@ api.isObject = (o) => {
   const type = typeof o;
   return o != null && (type === 'object' || type === 'function')
 }
+/**
+ * Checks if value is classified as a String primitive or object.
+ * @param {*} s - value to test
+ * @return {boolean} - returns true if value is string
+ */
 api.isString = (s) => (typeof s === 'string' || s instanceof String)
 api.isNumber = api.isType('Number')
 api.isDate = api.isType('Date')
@@ -621,4 +627,5 @@ const getChainedFunctions = api.memoize((dummy, state) => {
   return chain
 }, {capacity : 1})
 
-module.exports = Object.freeze(api)
+Object.freeze(api)
+module.exports = api

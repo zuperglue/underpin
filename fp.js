@@ -258,4 +258,5 @@ api.rejectIfFalsy = curryRight(_.rejectIfFalsy,2)
 api.isPromise =  _.isPromise
 api.argsToCacheKey =  _.argsToCacheKey
 
-module.exports = Object.freeze(api)
+Object.freeze(api)
+module.exports = api

@@ -1,5 +1,8 @@
 "use strict";
 const _ = require ('./underpin')
+/**
+ * @namespace _
+ */
 const api = (v) => {
   return _(v)
 }
@@ -84,6 +87,10 @@ dummy = curryLeft(null,0)
 dummy = curryLeft(null,1)
 
 /* API mapping */
+/**
+ * @string VERSION
+ * @memberof _
+ */
 api.VERSION = _.VERSION
 /* Array ***************************************/
 api.chunk = curryRight(_.chunk,2)
@@ -156,6 +163,13 @@ api.isObject = _.isObject
 api.isPlainObject = _.isPlainObject
 api.isRegExp = _.isRegExp
 api.isSet = _.isSet
+/**
+ * Checks if value is classified as a String primitive or object.
+ * @function isString
+ * @param {*} s - value to test
+ * @return {boolean} - returns true if value is string
+ * @memberof _
+ */
 api.isString = _.isString
 api.isSymbol = _.isSymbol
 api.isUndefined = _.isUndefined

@@ -1,6 +1,8 @@
 "use strict";
 const {isDeepStrictEqual} = require('util');
-
+/**
+ * @namespace _
+ */
 const api = (v) => {
   const state = {value: v}
   const chain = getChainedFunctions('dummy', state);
@@ -13,6 +15,11 @@ const api = (v) => {
 api.VERSION = require('./package.json').version;
 
 /* Lang ************************************** */
+/**
+ * Cast value to Array.
+ * @param {*} a - value to cast
+ * @return {array} - returns value casted to array
+ */
 api.castArray = (...a) => api.isArray(a[0]) ? a[0] : api.isSet(a[0]) ? [...a[0]] : (a.length == 0) ? [] : [a[0]]
 api.isType = (name) => (obj => Object.prototype.toString.call(obj) === '[object ' + name + ']')
 api.isArray = (o) => Array.isArray(o)

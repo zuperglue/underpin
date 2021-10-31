@@ -1,7 +1,7 @@
 "use strict";
 const {isDeepStrictEqual} = require('util');
 /**
- * @namespace _
+ * @name _
  */
 const api = (v) => {
   const state = {value: v}

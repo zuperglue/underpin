@@ -1,7 +1,7 @@
 "use strict";
 const _ = require ('./underpin')
 /**
- * @namespace _
+ * @name _
  */
 const api = (v) => {
   return _(v)

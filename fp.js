@@ -1,8 +1,6 @@
 "use strict";
 const _ = require ('./underpin')
-/**
- * @name _
- */
+
 const api = (v) => {
   return _(v)
 }
@@ -163,13 +161,6 @@ api.isObject = _.isObject
 api.isPlainObject = _.isPlainObject
 api.isRegExp = _.isRegExp
 api.isSet = _.isSet
-/**
- * Checks if value is classified as a String primitive or object.
- * @function isString
- * @param {*} s - value to test
- * @return {boolean} - returns true if value is string
- * @memberof _
- */
 api.isString = _.isString
 api.isSymbol = _.isSymbol
 api.isUndefined = _.isUndefined

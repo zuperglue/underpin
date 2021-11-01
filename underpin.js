@@ -1,7 +1,15 @@
 "use strict";
 const {isDeepStrictEqual} = require('util');
 /**
- * @name _
+ * @namespace _
+ */
+
+/**
+ * Return stuff.
+ * @function _
+ * @static
+ * @param {*} v - state stuff
+ * @return {function} - returns value casted to array
  */
 const api = (v) => {
   const state = {value: v}
@@ -17,6 +25,8 @@ api.VERSION = require('./package.json').version;
 /* Lang ************************************** */
 /**
  * Cast value to Array.
+ * @function _.castArray
+ * @static
  * @param {*} a - value to cast
  * @return {array} - returns value casted to array
  */
@@ -34,6 +44,8 @@ api.isObject = (o) => {
 }
 /**
  * Checks if value is classified as a String primitive or object.
+ * @function _.isString
+ * @static
  * @param {*} s - value to test
  * @return {boolean} - returns true if value is string
  */

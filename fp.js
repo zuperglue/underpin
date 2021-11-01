@@ -1,6 +1,17 @@
 "use strict";
 const _ = require ('./underpin')
 
+/**
+ * @namespace _
+ */
+
+/**
+ * Return stuff.
+ * @function _
+ * @static
+ * @param {*} v - state stuff
+ * @return {function} - returns value casted to array
+ */
 const api = (v) => {
   return _(v)
 }
@@ -134,6 +145,13 @@ api.negate = _.negate
 api.memoize = _.memoize
 
 /* Lang **************************************/
+/**
+ * Cast value to Array.
+ * @function _.castArray
+ * @static
+ * @param {*} a - value to cast
+ * @return {array} - returns value casted to array
+ */
 api.castArray = _.castArray
 api.conformsTo = curryRight(_.conformsTo,2)
 api.eq = curryRight(_.eq,2)
@@ -161,6 +179,13 @@ api.isObject = _.isObject
 api.isPlainObject = _.isPlainObject
 api.isRegExp = _.isRegExp
 api.isSet = _.isSet
+/**
+ * Checks if value is classified as a String primitive or object.
+ * @function _.isString
+ * @static
+ * @param {*} s - value to test
+ * @return {boolean} - returns true if value is string
+ */
 api.isString = _.isString
 api.isSymbol = _.isSymbol
 api.isUndefined = _.isUndefined

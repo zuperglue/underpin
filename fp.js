@@ -96,10 +96,7 @@ dummy = curryLeft(null,0)
 dummy = curryLeft(null,1)
 
 /* API mapping */
-/**
- * @string VERSION
- * @memberof _
- */
+/** @property {string} _.VERSION - Symantic version */
 api.VERSION = _.VERSION
 /* Array ***************************************/
 api.chunk = curryRight(_.chunk,2)
@@ -126,6 +123,14 @@ api.zipObject = curryRight(_.zipObject,2)
 
 /* Collection ***************************************/
 api.forEach = curryRight(_.forEach,2)
+
+/**
+ * Filter array using iteratee shortcuts.
+ * @function _.filter
+ * @static
+ * @param {function|object|string} predicate - iteratee used to filter array
+ * @return {(array) => array } - function expecting source array is input, returning filtered array
+ */
 api.filter = curryRight(_.filter,2)                 // Iteratee replace candidate
 api.find = curryRight(_.find,2 )                    // partials start at 0, Iteratee replace candidate
 api.groupBy = curryRight(_.groupBy,2 )
